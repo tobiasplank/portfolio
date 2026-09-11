@@ -6,6 +6,11 @@
     --color-accent: rgb(190 92 255);
     --color-line: rgb(60 60 60);
 
+    --hero-glow-core: rgb(162 66 204 / 38%);
+    --hero-glow-medium: rgb(162 66 204 / 21%);
+    --hero-glow-soft: rgb(162 66 204 / 8%);
+    --hero-glow-faint: rgb(162 66 204 / 2%);
+
     --grid-cell: 0.5rem;
     --grid-half-cell: 0.25rem;
     --grid-fine-line: rgb(120 120 120 / 6%);
@@ -19,6 +24,11 @@
     --color-text: rgb(36 36 36);
     --color-line: rgb(200 200 200);
     --color-accent: rgb(200 110 0);
+
+    --hero-glow-core: rgb(210 138 35 / 38%);
+    --hero-glow-medium: rgb(210 138 35 / 21%);
+    --hero-glow-soft: rgb(210 138 35 / 8%);
+    --hero-glow-faint: rgb(210 138 35 / 2%);
 
     --grid-fine-line: rgb(180 180 180 / 6%);
 }
@@ -115,6 +125,11 @@ a {
 
 .site-shell::after {
     left: 100%;
+}
+
+.site-shell--no-lines::before,
+.site-shell--no-lines::after {
+    display: none;
 }
 
 .site-main {

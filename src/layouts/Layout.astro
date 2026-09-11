@@ -6,13 +6,24 @@ import Footer from "@/layouts/Footer.astro";
 
 // Global styles are loaded once by the root layout.
 import "@/styles/global.css";
+
+export interface Props {
+    title?: string;
+    description?: string;
+    showSideLines?: boolean;
+}
+
+const {
+    showSideLines = true,
+    ...headProps
+} = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-<Head {...Astro.props} />
+<Head {...headProps} />
 <body>
-<div class="site-shell">
+<div class:list={["site-shell", { "site-shell--no-lines": !showSideLines }]}>
   <Nav />
   <main class="site-main">
     <slot />

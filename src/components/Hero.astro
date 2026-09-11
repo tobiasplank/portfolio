@@ -1,6 +1,5 @@
 ---
 import "@/styles/hero.css";
-
 import Heading from "@/components/ui/Heading.astro";
 
 import serverIcon from "pixelarticons/svg/server-3.svg?url";
@@ -8,314 +7,344 @@ import linuxIcon from "pixelarticons/svg/linux.svg?url";
 import virtualizationIcon from "pixelarticons/svg/box-stack.svg?url";
 import codeIcon from "pixelarticons/svg/file-big-code.svg?url";
 
-// Keep icon imports static so Astro can bundle the SVG assets.
-const heroIcons = {
+export interface SequenceItem {
+    text: string;
+    icon?: string;
+    label?: string;
+    color?: {
+        dark: string;
+        light: string;
+    };
+}
+
+export interface Props {
+    staticText?: string;
+    sequences?: SequenceItem[];
+    animated?: boolean;
+    tagName?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    tagSize?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+    showGlow?: boolean;
+}
+
+const defaultIcons: Record<string, string> = {
     "server-3": serverIcon,
     "linux": linuxIcon,
     "box-stack": virtualizationIcon,
     "file-big-code": codeIcon,
 };
 
-// Add or reorder animated labels here. Each label can define its own theme colors.
-const heroSequences = [
+const defaultSequences: SequenceItem[] = [
     {
         text: "HCI",
         icon: "server-3",
         label: "server",
-        color: {
-            dark: "rgb(190 92 255)",
-            light: "rgb(200 110 0)"
-        },
+        color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
     },
     {
         text: "linux administration",
         icon: "linux",
         label: "linux",
-        color: {
-            dark: "rgb(190 92 255)",
-            light: "rgb(200 110 0)"
-        },
+        color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
     },
     {
         text: "virtualization",
         icon: "box-stack",
         label: "virtual machine",
-        color: {
-            dark: "rgb(190 92 255)",
-            light: "rgb(200 110 0)"
-        },
+        color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
     },
     {
         text: "automation",
         icon: "file-big-code",
         label: "code",
-        color: {
-            dark: "rgb(190 92 255)",
-            light: "rgb(200 110 0)"
-        },
+        color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
     },
 ];
 
+const {
+    staticText = "Hey there! I'm Tobi, <br> a system engineer for",
+    sequences = defaultSequences,
+    animated = true,
+    tagName = "h1",
+    tagSize = "h1",
+    showGlow = true,
+} = Astro.props;
+
+const isAnimated = animated && sequences.length > 0;
 ---
 
-<div class="hero">
-    <div class="hero__glow" aria-hidden="true"></div>
+<div class:list={["hero", { "hero--has-animation": isAnimated }]}>
+    {showGlow && <div class="hero__glow" aria-hidden="true" />}
 
-    <Heading tagName="h1" tagSize="h1">
+    <Heading tagName={tagName} tagSize={tagSize}>
         <span class="hero__static-text">
-            Hey there! I'm Tobi, <br> a system engineer for
+            {Astro.slots.has("default") ? <slot /> : <Fragment set:html={staticText} />}
         </span>
 
-            <span class="hero__dynamic-line">
-            <span
-                    class="hero__dynamic-text"
-                    aria-live="polite"
-                    aria-atomic="true"
-            ></span>
-
-            <span
-                    class="hero__dynamic-icon"
-                    aria-hidden="true"
-            ></span>
-
-            <span
-                    class="hero__cursor"
-                    aria-hidden="true"
-            ></span>
-        </span>
+        {isAnimated && (
+                <span class="hero__dynamic-line">
+                <span class="hero__dynamic-text" aria-live="polite" aria-atomic="true"></span>
+                <span class="hero__dynamic-icon" aria-hidden="true"></span>
+                <span class="hero__cursor" aria-hidden="true"></span>
+            </span>
+        )}
     </Heading>
 </div>
 
-<script define:vars={{ heroSequences, heroIcons }}>
-    const hero = document.querySelector(".hero");
-    const dynamicText = hero?.querySelector(".hero__dynamic-text");
-    const dynamicIcon = hero?.querySelector(".hero__dynamic-icon");
+{isAnimated && (
+    <script define:vars={{ heroSequences: sequences, heroIcons: defaultIcons }}>
+        const hero = document.querySelector(".hero");
+        const dynamicText = hero?.querySelector(".hero__dynamic-text");
+        const dynamicIcon = hero?.querySelector(".hero__dynamic-icon");
 
-    if (!hero || !dynamicText || !dynamicIcon) {
-        throw new Error("Hero animation elements are missing");
-    }
-
-    let isHeroVisible = false;
-    let isAnimationRunning = false;
-    // AbortController cancels delays and typing when the hero leaves the viewport.
-    let animationController = null;
-    let activeSequence = heroSequences[0];
-
-    const sleep = (duration, signal) =>
-        new Promise((resolve) => {
-            if (signal.aborted) {
-                resolve(false);
-                return;
-            }
-
-            const timer = setTimeout(() => {
-                cleanup();
-                resolve(true);
-            }, duration);
-
-            const handleAbort = () => {
-                clearTimeout(timer);
-                cleanup();
-                resolve(false);
-            };
-
-            const cleanup = () => {
-                signal.removeEventListener("abort", handleAbort);
-            };
-
-            signal.addEventListener("abort", handleAbort);
-        });
-
-    const applySequenceColor = (sequence) => {
-        const theme =
-            document.documentElement.dataset.theme === "light"
-                ? "light"
-                : "dark";
-
-        hero.style.setProperty(
-            "--hero-sequence-color",
-            sequence.color[theme],
-        );
-    };
-
-    const setIcon = (iconName, label) => {
-        dynamicIcon.style.setProperty(
-            "--icon-url",
-            `url("${heroIcons[iconName]}")`,
-        );
-
-        dynamicIcon.setAttribute("aria-label", label);
-        dynamicIcon.classList.add("hero__dynamic-icon--visible");
-    };
-
-    const clearIcon = () => {
-        dynamicIcon.classList.remove("hero__dynamic-icon--visible");
-        dynamicIcon.removeAttribute("aria-label");
-    };
-
-    const writeText = async (text, signal) => {
-        for (const character of text) {
-            if (signal.aborted) {
-                return false;
-            }
-
-            dynamicText.textContent += character;
-
-            const completed = await sleep(75, signal);
-
-            if (!completed) {
-                return false;
-            }
+        if (!hero || !dynamicText || !dynamicIcon) {
+            throw new Error("Hero animation elements are missing");
         }
 
-        return true;
-    };
+        let isHeroVisible = false;
+        let isAnimationRunning = false;
+        // AbortController cancels delays and typing when the hero leaves the viewport.
+        let animationController = null;
+        let activeSequence = heroSequences[0];
 
-    const deleteText = async (signal) => {
-        while (dynamicText.textContent.length > 0) {
-            if (signal.aborted) {
-                return false;
+        const sleep = (duration, signal) =>
+            new Promise((resolve) => {
+                if (signal.aborted) {
+                    resolve(false);
+                    return;
+                }
+
+                const timer = setTimeout(() => {
+                    cleanup();
+                    resolve(true);
+                }, duration);
+
+                const handleAbort = () => {
+                    clearTimeout(timer);
+                    cleanup();
+                    resolve(false);
+                };
+
+                const cleanup = () => {
+                    signal.removeEventListener("abort", handleAbort);
+                };
+
+                signal.addEventListener("abort", handleAbort);
+            });
+
+        const applySequenceColor = (sequence) => {
+            if (!sequence?.color) return;
+            const theme =
+                document.documentElement.dataset.theme === "light"
+                    ? "light"
+                    : "dark";
+
+            const colorVal =
+                sequence.color[theme] ||
+                sequence.color.dark ||
+                sequence.color;
+
+            if (colorVal) {
+                hero.style.setProperty(
+                    "--hero-sequence-color",
+                    colorVal,
+                );
             }
+        };
 
-            dynamicText.textContent =
-                dynamicText.textContent.slice(0, -1);
-
-            const completed = await sleep(45, signal);
-
-            if (!completed) {
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    const runAnimation = async (signal) => {
-        const reducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)",
-        ).matches;
-
-        if (reducedMotion) {
-            const firstSequence = heroSequences[0];
-
-            activeSequence = firstSequence;
-            applySequenceColor(firstSequence);
-
-            dynamicText.textContent = firstSequence.text;
-            setIcon(firstSequence.icon, firstSequence.label);
-
-            return;
-        }
-
-        // Process one complete sequence cycle.
-        for (const sequence of heroSequences) {
-            if (signal.aborted) {
-                return;
-            }
-
-            activeSequence = sequence;
-
-            applySequenceColor(sequence);
-            clearIcon();
-
-            const textWritten = await writeText(
-                sequence.text,
-                signal,
+        const setIcon = (iconName, label) => {
+            if (!iconName) return;
+            const iconUrl = heroIcons[iconName] || iconName;
+            dynamicIcon.style.setProperty(
+                "--icon-url",
+                `url("${iconUrl}")`,
             );
 
-            if (!textWritten) {
+            if (label) {
+                dynamicIcon.setAttribute("aria-label", label);
+            }
+            dynamicIcon.classList.add("hero__dynamic-icon--visible");
+        };
+
+        const clearIcon = () => {
+            dynamicIcon.classList.remove("hero__dynamic-icon--visible");
+            dynamicIcon.removeAttribute("aria-label");
+        };
+
+        const writeText = async (text, signal) => {
+            for (const character of text) {
+                if (signal.aborted) {
+                    return false;
+                }
+
+                dynamicText.textContent += character;
+
+                const completed = await sleep(75, signal);
+
+                if (!completed) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        const deleteText = async (signal) => {
+            while (dynamicText.textContent.length > 0) {
+                if (signal.aborted) {
+                    return false;
+                }
+
+                dynamicText.textContent =
+                    dynamicText.textContent.slice(0, -1);
+
+                const completed = await sleep(45, signal);
+
+                if (!completed) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        const runAnimation = async (signal) => {
+            const reducedMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches;
+
+            if (reducedMotion) {
+                const firstSequence = heroSequences[0];
+                if (firstSequence) {
+                    activeSequence = firstSequence;
+                    if (firstSequence.color) {
+                        applySequenceColor(firstSequence);
+                    }
+
+                    dynamicText.textContent = firstSequence.text;
+                    if (firstSequence.icon) {
+                        setIcon(firstSequence.icon, firstSequence.label);
+                    }
+                }
+
                 return;
             }
 
-            setIcon(sequence.icon, sequence.label);
+            // Process one complete sequence cycle.
+            for (const sequence of heroSequences) {
+                if (signal.aborted) {
+                    return;
+                }
 
-            const pauseCompleted = await sleep(2200, signal);
+                activeSequence = sequence;
 
-            if (!pauseCompleted) {
+                if (sequence.color) {
+                    applySequenceColor(sequence);
+                }
+                clearIcon();
+
+                const textWritten = await writeText(
+                    sequence.text,
+                    signal,
+                );
+
+                if (!textWritten) {
+                    return;
+                }
+
+                if (sequence.icon) {
+                    setIcon(sequence.icon, sequence.label);
+                }
+
+                const pauseCompleted = await sleep(2200, signal);
+
+                if (!pauseCompleted) {
+                    return;
+                }
+
+                clearIcon();
+
+                const textDeleted = await deleteText(signal);
+
+                if (!textDeleted) {
+                    return;
+                }
+
+                const transitionCompleted = await sleep(350, signal);
+
+                if (!transitionCompleted) {
+                    return;
+                }
+            }
+
+            // Restart only while the hero remains visible.
+            if (!signal.aborted && isHeroVisible) {
+                await runAnimation(signal);
+            }
+        };
+
+        const startAnimation = () => {
+            if (isAnimationRunning) {
                 return;
             }
+
+            const controller = new AbortController();
+
+            isAnimationRunning = true;
+            animationController = controller;
+
+            hero.classList.add("hero--glow-active");
+
+            void runAnimation(controller.signal).finally(() => {
+                // Do not let an old animation overwrite the state of a newer one.
+                if (animationController === controller) {
+                    animationController = null;
+                    isAnimationRunning = false;
+                }
+            });
+        };
+
+        const stopAnimation = () => {
+            if (!isAnimationRunning) {
+                return;
+            }
+
+            animationController?.abort();
+            animationController = null;
+            isAnimationRunning = false;
 
             clearIcon();
+            dynamicText.textContent = "";
 
-            const textDeleted = await deleteText(signal);
+            hero.classList.remove("hero--glow-active");
+        };
 
-            if (!textDeleted) {
-                return;
-            }
+        // Pause all animation work while the hero is outside the viewport.
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                isHeroVisible = entry.isIntersecting;
 
-            const transitionCompleted = await sleep(350, signal);
+                if (isHeroVisible) {
+                    startAnimation();
+                } else {
+                    stopAnimation();
+                }
+            },
+            {
+                threshold: 0.15,
+            },
+        );
 
-            if (!transitionCompleted) {
-                return;
-            }
-        }
+        observer.observe(hero);
 
-        // Restart only while the hero remains visible.
-        if (!signal.aborted && isHeroVisible) {
-            await runAnimation(signal);
-        }
-    };
-
-    const startAnimation = () => {
-        if (isAnimationRunning) {
-            return;
-        }
-
-        const controller = new AbortController();
-
-        isAnimationRunning = true;
-        animationController = controller;
-
-        hero.classList.add("hero--glow-active");
-
-        void runAnimation(controller.signal).finally(() => {
-            // Do not let an old animation overwrite the state of a newer one.
-            if (animationController === controller) {
-                animationController = null;
-                isAnimationRunning = false;
+        const themeObserver = new MutationObserver(() => {
+            if (activeSequence) {
+                applySequenceColor(activeSequence);
             }
         });
-    };
 
-    const stopAnimation = () => {
-        if (!isAnimationRunning) {
-            return;
-        }
-
-        animationController?.abort();
-        animationController = null;
-        isAnimationRunning = false;
-
-        clearIcon();
-        dynamicText.textContent = "";
-
-        hero.classList.remove("hero--glow-active");
-    };
-
-    // Pause all animation work while the hero is outside the viewport.
-    const observer = new IntersectionObserver(
-        ([entry]) => {
-            isHeroVisible = entry.isIntersecting;
-
-            if (isHeroVisible) {
-                startAnimation();
-            } else {
-                stopAnimation();
-            }
-        },
-        {
-            threshold: 0.15,
-        },
-    );
-
-    observer.observe(hero);
-
-    const themeObserver = new MutationObserver(() => {
-        applySequenceColor(activeSequence);
-    });
-
-    themeObserver.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["data-theme"],
-    });
-</script>
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme"],
+        });
+    </script>
+)}

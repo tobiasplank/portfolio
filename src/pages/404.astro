@@ -1,0 +1,133 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Link from "@/components/ui/Link.astro";
+---
+
+<Layout title="404 - Not Found" showSideLines={false}>
+    <section class="not-found">
+        <div class="not-found__glow" aria-hidden="true"></div>
+        <div class="not-found__content">
+            <h1 class="not-found__title">404</h1>
+            <p class="not-found__subtitle">Page not found.</p>
+            <Link href="/" variant="primary">Go back home</Link>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .not-found {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - 16rem);
+        margin-top: calc(var(--grid-cell) * -5);
+        margin-inline: calc(var(--grid-cell) * -5);
+        padding: calc(var(--grid-cell) * 5);
+        text-align: center;
+        animation: "404-title-in" 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    }
+
+    .not-found__glow {
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 100vw;
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
+
+    .not-found__glow::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background: radial-gradient(
+            ellipse 88% 80% at 50% 0%,
+            var(--hero-glow-core) 0%,
+            var(--hero-glow-core) 14%,
+            var(--hero-glow-medium) 38%,
+            var(--hero-glow-soft) 66%,
+            var(--hero-glow-faint) 84%,
+            transparent 100%
+        );
+        background-repeat: no-repeat;
+        opacity: 0;
+        transform: scaleY(0.18);
+        transform-origin: 50% 0;
+        will-change: opacity, transform;
+        animation: not-found-glow-in 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    }
+
+    .not-found__content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .not-found__title {
+        font-family: "Departure Mono", monospace;
+        font-size: clamp(16rem, 22vw, 14rem);
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        margin: 0;
+        color: var(--color-text);
+    }
+
+    .not-found__subtitle {
+        font-family: "Departure Mono", monospace;
+        font-size: clamp(1.8rem, 2.5vw, 1.35rem);
+        font-weight: 400;
+        color: var(--color-muted);
+        margin: 0;
+        letter-spacing: -0.02em;
+        margin-bottom: calc(var(--grid-cell) * 4);
+    }
+
+    @keyframes "404-title-in" {
+        from {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(0.6rem);
+        }
+        to {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes not-found-glow-in {
+        from {
+            opacity: 0;
+            transform: scaleY(0.18);
+        }
+        to {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .not-found__glow::before {
+            opacity: 1;
+            transform: scaleY(1);
+            animation: none;
+        }
+    }
+
+    @media (max-width: 40rem) {
+        .not-found {
+            margin-top: calc(var(--grid-cell) * -2);
+            margin-inline: calc(var(--grid-cell) * -2);
+            padding: calc(var(--grid-cell) * 2);
+        }
+    }
+</style>
