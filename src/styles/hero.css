@@ -24,7 +24,7 @@
     margin-inline: calc(var(--grid-cell) * -5);
 }
 
-.hero > h1 {
+.hero > :is(h1, h2, h3, h4, h5, h6, .heading) {
     position: absolute;
     z-index: 1;
     bottom: var(--hero-content-inset);
@@ -37,7 +37,8 @@
     will-change: opacity, filter, transform;
 }
 
-.hero--glow-active > h1 {
+.hero--glow-active > :is(h1, h2, h3, h4, h5, h6, .heading),
+.hero:not(.hero--has-animation) > :is(h1, h2, h3, h4, h5, h6, .heading) {
     animation: hero-title-in 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
@@ -70,7 +71,8 @@
     will-change: opacity, transform;
 }
 
-.hero--glow-active .hero__glow::before {
+.hero--glow-active .hero__glow::before,
+.hero:not(.hero--has-animation) .hero__glow::before {
     animation: hero-glow-in 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
@@ -190,7 +192,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .hero > h1 {
+    .hero > :is(h1, h2, h3, h4, h5, h6, .heading) {
         opacity: 1;
         filter: none;
         transform: none;
@@ -202,7 +204,9 @@
     }
 
     .hero--glow-active .hero__glow::before,
-    .hero--glow-active > h1 {
+    .hero--glow-active > :is(h1, h2, h3, h4, h5, h6, .heading),
+    .hero:not(.hero--has-animation) .hero__glow::before,
+    .hero:not(.hero--has-animation) > :is(h1, h2, h3, h4, h5, h6, .heading) {
         animation: none;
     }
 
