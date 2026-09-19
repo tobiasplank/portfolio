@@ -1,6 +1,7 @@
 # folders
 .astro/
 .idea/
+.junie/
 dist/
 node_modules/
 

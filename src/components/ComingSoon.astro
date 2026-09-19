@@ -1,0 +1,107 @@
+---
+import Heading from "@/ui/Heading.astro";
+export interface Props {
+    heading?: string;
+    subheading?: string;
+    description?: string;
+    icon?: string;
+}
+
+const {
+    heading = "Coming soon!",
+    subheading = "This part is currently under construction.",
+    description,
+    icon,
+} = Astro.props;
+
+const pixelartIcons = import.meta.glob("/node_modules/pixelarticons/svg/*.svg", {
+    eager: true,
+    import: "default",
+    query: "?url",
+});
+const iconUrl = icon
+    ? pixelartIcons[`/node_modules/pixelarticons/svg/${icon}.svg`]
+    : undefined;
+---
+
+<div class="box bg-solid coming-soon">
+    <div class="coming-soon__content">
+        <div class="coming-soon__icon">
+            {iconUrl && <span class="coming-soon__svg" style={`--icon-url: url("${iconUrl}")`} aria-hidden="true"></span>}
+        </div>
+
+        <Heading tagName="h2" tagSize="h2" class="coming-soon__heading">
+            {heading}
+        </Heading>
+        <Heading tagName="h4" tagSize="h4" class="coming-soon__subheading">
+            {subheading}
+        </Heading>
+        {description && <p class="coming-soon__description" set:html={description} />}
+    </div>
+</div>
+
+<style>
+    .coming-soon {
+        box-sizing: border-box;
+        display: flex;
+        flex: 1 1 auto;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        padding: calc(var(--grid-cell) * 4);
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text);
+        background-color: var(--color-bg);
+        overflow: hidden;
+    }
+
+    .coming-soon__content {
+        display: flex;
+        width: min(100%, 42rem);
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .coming-soon__subheading {
+        margin-top: calc(var(--grid-cell) * 3);
+    }
+
+    .coming-soon__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(var(--grid-cell) * 10);
+        height: calc(var(--grid-cell) * 10);
+        margin-bottom: calc(var(--grid-cell) * 2);
+        border: 1px solid var(--color-line);
+        border-radius: 6px;
+        background: var(--color-surface);
+    }
+
+    .coming-soon__svg {
+        display: block;
+        width: 4rem;
+        height: 4rem;
+        color: var(--color-accent);
+        background-color: currentColor;
+        mask: var(--icon-url) center / contain no-repeat;
+        -webkit-mask: var(--icon-url) center / contain no-repeat;
+    }
+
+    .coming-soon__description {
+        color: var(--color-muted);
+        width: 100%;
+        margin: calc(var(--grid-cell) * 2) 0 0;
+        padding-top: calc(var(--grid-cell) * 2);
+        border-top: 1px solid var(--color-line);
+        line-height: 1.65;
+    }
+
+    @media (max-width: 40rem) {
+        .coming-soon {
+            padding: calc(var(--grid-cell) * 3);
+        }
+    }
+</style>

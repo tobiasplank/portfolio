@@ -1,0 +1,119 @@
+---
+import Heading from "@/ui/Heading.astro";
+export interface Props {
+    heading?: string;
+    subheading?: string;
+    description?: string;
+    icon?: string;
+    iconColor?: string;
+}
+
+const {
+    heading,
+    subheading,
+    description,
+    icon,
+    iconColor = "var(--color-accent)",
+} = Astro.props;
+
+const pixelartIcons = import.meta.glob("/node_modules/pixelarticons/svg/*.svg", {
+    eager: true,
+    import: "default",
+    query: "?url",
+});
+const iconUrl = icon
+    ? pixelartIcons[`/node_modules/pixelarticons/svg/${icon}.svg`]
+    : undefined;
+---
+
+<div
+    class="feature"
+    style={`--feature-icon-color: ${iconColor};`}
+>
+    <div class="feature__content">
+        <div class="feature__icon">
+            {iconUrl && <span class="feature__svg" style={`--icon-url: url("${iconUrl}")`} aria-hidden="true"></span>}
+        </div>
+
+        {heading && (
+            <Heading tagName="h2" tagSize="h3" class="feature__heading">
+                {heading}
+            </Heading>
+        )}
+        {subheading && (
+            <Heading tagName="h4" tagSize="h4" class="feature__subheading">
+                {subheading}
+            </Heading>
+        )}
+        {description && <p class="feature__description" set:html={description} />}
+    </div>
+</div>
+
+<style>
+    .feature {
+        box-sizing: border-box;
+        display: flex;
+        flex: 1 1 auto;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        padding: calc(var(--grid-cell) * 4);
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text);
+        overflow: hidden;
+    }
+
+    .feature__content {
+        display: flex;
+        width: min(100%, 42rem);
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .feature__heading {
+        color: var(--color-text);
+    }
+
+    .feature__subheading {
+        margin-top: calc(var(--grid-cell) * 3);
+        color: var(--color-muted);
+    }
+
+    .feature__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(var(--grid-cell) * 8);
+        height: calc(var(--grid-cell) * 8);
+        margin-bottom: calc(var(--grid-cell) * 2);
+        border: 1px solid var(--color-line);
+        border-radius: 6px;
+    }
+
+    .feature__svg {
+        display: block;
+        width: calc(var(--grid-cell) * 5);
+        height: calc(var(--grid-cell) * 5);
+        color: var(--feature-icon-color);
+        background-color: currentColor;
+        mask: var(--icon-url) center / contain no-repeat;
+        -webkit-mask: var(--icon-url) center / contain no-repeat;
+    }
+
+    .feature__description {
+        color: var(--color-muted);
+        width: 100%;
+        margin: calc(var(--grid-cell) * 2) 0 0;
+        padding-top: calc(var(--grid-cell) * 2);
+        border-top: 1px solid var(--color-line);
+        line-height: 1.65;
+    }
+
+    @media (max-width: 40rem) {
+        .feature {
+            padding: calc(var(--grid-cell) * 3);
+        }
+    }
+</style>

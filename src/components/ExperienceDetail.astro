@@ -1,0 +1,253 @@
+---
+import experienceData from "@/data/about/experience.json";
+import Heading from "@/components/ui/Heading.astro";
+import Label from "@/components/ui/Label.astro";
+
+interface Position {
+    grade?: string;
+    title: string;
+    company: string;
+    description?: string;
+    location_city?: string;
+    location_country?: string;
+    location_type?: string;
+    employment_type?: string;
+    start: string;
+    end: string;
+    projects?: string[];
+    certifications?: string[];
+    skills?: string[];
+}
+
+const rawPositions: Position[] = ((experienceData as any).positions || (experienceData as any).experience || []) as Position[];
+
+// Group positions by company
+const companyMap = new Map<string, Position[]>();
+rawPositions.forEach((pos) => {
+    const existing = companyMap.get(pos.company) || [];
+    existing.push(pos);
+    companyMap.set(pos.company, existing);
+});
+
+interface CompanyGroupData {
+    company: string;
+    latestTimestamp: number;
+    sortedPositions: Position[];
+}
+
+const rawCompanyGroups: CompanyGroupData[] = Array.from(companyMap.entries()).map(([companyName, posList]) => {
+    // Sort reverse chronological within company (newest first)
+    const sorted = [...posList].sort((a, b) => {
+        const aStart = new Date(a.start).getTime();
+        const bStart = new Date(b.start).getTime();
+        return bStart - aStart;
+    });
+
+    const hasCurrent = sorted.some((p) => !p.end);
+    const latestPos = sorted[0];
+    const latestTimestamp = hasCurrent ? Number.MAX_SAFE_INTEGER : (latestPos.end ? new Date(latestPos.end).getTime() : new Date(latestPos.start).getTime());
+
+    return {
+        company: companyName,
+        latestTimestamp,
+        sortedPositions: sorted,
+    };
+});
+
+// Sort companies by latest timestamp descending (newest company first)
+const sortedCompanyGroups = rawCompanyGroups.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
+
+let globalIndex = 0;
+const positionDetails: {
+    id: string;
+    fullTitle: string;
+    company: string;
+    description?: string;
+    projects: string[];
+    certifications: string[];
+    skills: string[];
+    isEmpty: boolean;
+}[] = [];
+
+sortedCompanyGroups.forEach((group) => {
+    group.sortedPositions.forEach((p) => {
+        const id = `pos-${globalIndex++}`;
+        const fullTitle = p.grade ? `${p.grade} ${p.title}` : p.title;
+        const projects = p.projects || [];
+        const certifications = p.certifications || [];
+        const skills = p.skills || [];
+        const description = (p.description || "").trim();
+        const isEmpty = !description && projects.length === 0 && certifications.length === 0 && skills.length === 0;
+
+        positionDetails.push({
+            id,
+            fullTitle,
+            company: group.company,
+            description,
+            projects,
+            certifications,
+            skills,
+            isEmpty,
+        });
+    });
+});
+---
+
+<div class="experience-detail-card">
+    <div class="experience-detail-header">
+        <Heading tagName="h4" tagSize="h4">Position Details</Heading>
+    </div>
+
+    <div class="details-container">
+        {positionDetails.map((pos, idx) => (
+            <div
+                class:list={["detail-pane", { "is-active": pos.id === "pos-0" }]}
+                data-detail-id={pos.id}
+            >
+                {pos.isEmpty ? (
+                    <div class="empty-state">
+                        <p class="empty-text">No additional details available for this position.</p>
+                    </div>
+                ) : (
+                    <div class="detail-content">
+                        {pos.description && (
+                            <div class="detail-section">
+                                <Heading tagName="h4" tagSize="h4">Description</Heading>
+                                <p class="description-text">{pos.description}</p>
+                            </div>
+                        )}
+
+                        {pos.projects.length > 0 && (
+                            <div class="detail-section">
+                                <Heading tagName="h4" tagSize="h4">Projects</Heading>
+                                <div class="tag-list">
+                                    {pos.projects.map((proj) => (
+                                        <Label size="M">{proj}</Label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {pos.certifications.length > 0 && (
+                            <div class="detail-section">
+                                <Heading tagName="h4" tagSize="h4">Certifications</Heading>
+                                <div class="tag-list">
+                                    {pos.certifications.map((cert) => (
+                                        <Label size="M">{cert}</Label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {pos.skills.length > 0 && (
+                            <div class="detail-section">
+                                <Heading tagName="h4" tagSize="h4">Skills</Heading>
+                                <div class="tag-list">
+                                    {pos.skills.map((skill) => (
+                                        <Label size="M">{skill}</Label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        ))}
+    </div>
+</div>
+
+<script>
+    function setupDetailSwitching() {
+        const panes = document.querySelectorAll<HTMLElement>("[data-detail-id]");
+        if (!panes.length) return;
+
+        window.addEventListener("experience-position-selected", ((e: CustomEvent<{ positionId: string }>) => {
+            const activeId = e.detail?.positionId;
+            if (!activeId) return;
+
+            panes.forEach((pane) => {
+                const matches = pane.getAttribute("data-detail-id") === activeId;
+                pane.classList.toggle("is-active", matches);
+            });
+        }) as EventListener);
+    }
+
+    setupDetailSwitching();
+    document.addEventListener("astro:page-load", setupDetailSwitching);
+</script>
+
+<style>
+    .experience-detail-card {
+        padding: calc(var(--grid-cell) * 4);
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 3);
+        color: var(--color-text);
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .experience-detail-header {
+        border-bottom: 1px solid var(--color-line);
+        padding-bottom: calc(var(--grid-cell) * 2);
+    }
+
+    .details-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .detail-pane {
+        display: none;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .detail-pane.is-active {
+        display: flex;
+    }
+
+    .detail-content {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 3);
+    }
+
+    .detail-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .description-text {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--color-text);
+        white-space: pre-line;
+    }
+
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .empty-state {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        min-height: calc(var(--grid-cell) * 30);
+        text-align: center;
+    }
+
+    .empty-text {
+        margin: 0;
+        font-family: "Departure Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--color-muted);
+    }
+</style>

@@ -24,6 +24,7 @@ export interface Props {
     tagName?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     tagSize?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
     showGlow?: boolean;
+    compact?: boolean;
 }
 
 const defaultIcons: Record<string, string> = {
@@ -67,12 +68,13 @@ const {
     tagName = "h1",
     tagSize = "h1",
     showGlow = true,
+    compact = false,
 } = Astro.props;
 
 const isAnimated = animated && sequences.length > 0;
 ---
 
-<div class:list={["hero", { "hero--has-animation": isAnimated }]}>
+<div class:list={["hero", { "hero--has-animation": isAnimated, "hero--compact": compact }]}>
     {showGlow && <div class="hero__glow" aria-hidden="true" />}
 
     <Heading tagName={tagName} tagSize={tagSize}>

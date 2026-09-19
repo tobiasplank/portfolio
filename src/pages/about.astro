@@ -1,6 +1,79 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import Grid from "@/components/ui/Grid.astro"
+import PolaroidStack from "@/components/Polaroid.astro";
+import PolaroidModal from "@/components/PhotoModal.astro";
+import Profile from "@/components/Profile.astro";
+import Experience from "@/components/Experience.astro";
+import ExperienceDetail from "@/components/ExperienceDetail.astro";
+
+const photos = [
+    {
+        src: '/public/about_photos/portrait.png',
+        caption: 'That\'s me! ^-^ (Nov, 2025)',
+        alt: 'Self Portrait',
+        description: 'This portrait was actually taken for the local election campaign 2026. However, the ' +
+            'photographer has given me permission to use the photo for myself. ☺️'
+    },
+    {
+        src: '/public/about_photos/stephens_cathedral.png',
+        caption: 'St. Stephen\'s Cathedral (Mar, 2026)',
+        alt: 'St. Stephen\'s Cathedral, Vienna',
+        description: 'On the first evening of my vacation in Vienna with my best friend, I walked across ' +
+            'Stephansplatz. That\'s where I took this picture of the cathedral. The construction was completed in ' +
+            '1578. Wow! 😯'
+    },
+    {
+        src: '/public/about_photos/schoenbrunn_palace.png',
+        caption: 'Schönbrunn Palace (Mar, 2026)',
+        alt: 'Schönbrunn Palace, Vienna',
+        description: 'On the second day, we visited Schönbrunn Palace. For me, it’s a must-see on any trip to ' +
+            'Vienna. You can easily spend almost an entire day there. I also love to snack the famous ' +
+            'Mozartkugeln while I’m there. 🤭',
+        positionY: '80%'
+    },
+    {
+        src: '/public/about_photos/kunsthistorisches_museum.png',
+        caption: 'Kunsthistorisches Museum (Mar, 2026)',
+        alt: 'Kunsthistorisches Museum, Vienna',
+        description: 'That was the last photo from my vacation in Vienna, and it’s also my absolute favorite. You ' +
+            'can see the statue of “Theseus Defeating the Centaur”. What I like best is the café inside. The ' +
+            'museum’s own black tea blend alone is worth a visit. 😋',
+        positionY: '0%'
+    },
+    {
+        src: '/public/about_photos/neuburg_palace.png',
+        caption: 'Neuburg Palace (May, 2026)',
+        alt: 'Neuburg Palace',
+        description: 'I was in Neuburg with my work bestie, who also loves photography, and we spent the whole ' +
+            'evening taking pictures of the palace there. 😊',
+        positionY: '30%'
+    },
+];
+
 ---
 
 <Layout title="About">
+    <Hero
+        staticText="About me"
+        animated={false}
+        compact={true}
+        tagSize="h1"
+    />
+    <Grid minHeight="calc(var(--grid-cell) * 150)" >
+        <div class="box bg-solid">
+            <Profile />
+        </div>
+        <div class="box bg-solid" style="overflow: hidden;">
+            <PolaroidStack photos={photos} width="340px" baseZIndex={0} />
+            <PolaroidModal />
+        </div>
+        <div class="box bg-solid">
+            <Experience />
+        </div>
+        <div class="box bg-solid">
+            <ExperienceDetail />
+        </div>
+    </Grid>
 </Layout>

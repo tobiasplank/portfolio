@@ -1,0 +1,368 @@
+---
+export interface PolaroidPhoto {
+    src: string;
+    alt?: string;
+    caption?: string;
+    description?: string;
+    positionX?: string;       // Bildausschnitt horizontal (z.B. '20%', 'center', '10px')
+    positionY?: string;       // Bildausschnitt vertikal (z.B. 'top', '30%', '-20px')
+    objectPosition?: string;  // Direktes CSS object-position (z.B. 'center top')
+}
+
+interface Props {
+    photos: PolaroidPhoto[];
+    width?: string;
+    baseZIndex?: number;
+    class?: string;
+}
+
+const {
+    photos = [],
+    width = '310px',
+    baseZIndex = 10,
+    class: className = ''
+} = Astro.props;
+
+const restPresets = [
+    { rot: -2.5, x: -3, y: 2 },
+    { rot: 2.0,  x: 4,  y: -2 },
+    { rot: -1.5, x: -2, y: -3 },
+    { rot: 3.0,  x: 3,  y: 2 },
+    { rot: -3.0, x: 2,  y: -2 },
+];
+
+const fanPresets = [
+    { rot: -6.5, x: -16, y: -2 },
+    { rot: 6.0,  x: 18,  y: -3 },
+    { rot: -9.0, x: -24, y: 1 },
+    { rot: 8.5,  x: 25,  y: -1 },
+    { rot: -4.5, x: -12, y: 2 },
+];
+
+const total = photos.length;
+---
+
+<div
+        class={`polaroid-wrapper ${className}`}
+        style={`--stack-width: ${width}; --base-z-index: ${baseZIndex};`}
+>
+    <div class="polaroid-stack" data-total={total}>
+        {photos.map((photo, index) => {
+            const zIndex = total - index;
+            const isTop = index === 0;
+            const rest = restPresets[index % restPresets.length];
+            const fan = fanPresets[index % fanPresets.length];
+
+            // Exakte Bildpositionierung (Fallback 50% 50%)
+      const resolvedPosition = photo.objectPosition
+                || `${photo.positionX ?? '50%'} ${photo.positionY ?? '50%'}`;
+
+            return (
+                    <div
+                            class="polaroid-card"
+                            data-top={isTop ? 'true' : 'false'}
+                            data-src={photo.src}
+                            data-caption={photo.caption || ''}
+                            data-description={photo.description || ''}
+                            style={{
+                                zIndex: zIndex,
+                                '--rest-rot': `${rest.rot}deg`,
+                                '--rest-x': `${rest.x}px`,
+                                '--rest-y': `${rest.y}px`,
+                                '--fan-rot': `${fan.rot}deg`,
+                                '--fan-x': `${fan.x}px`,
+                                '--fan-y': `${fan.y}px`,
+                                '--intro-delay': `${index * 40}ms`,
+                            }}
+                    >
+                        <div class="photo-wrapper">
+                            <img
+                                    src={photo.src}
+                                    alt={photo.alt || photo.caption || 'Polaroid'}
+                                    draggable="false"
+                                    style={{ objectPosition: resolvedPosition }}
+                            />
+                            <div class="vintage-glare"></div>
+                        </div>
+                        {photo.caption && (
+                                <p class="polaroid-caption">{photo.caption}</p>
+                        )}
+                    </div>
+            );
+        })}
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+
+    .polaroid-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        isolation: isolate;
+        z-index: var(--base-z-index);
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .polaroid-stack {
+        position: relative;
+        width: var(--stack-width);
+        aspect-ratio: 3.5 / 4.2;
+        perspective: 1000px;
+    }
+
+    .polaroid-card {
+        position: absolute;
+        inset: 0;
+        background-color: #fdfcf9;
+        border-radius: 3px;
+        padding: 13px 13px 26px 13px;
+        box-shadow:
+                0 3px 8px rgba(0, 0, 0, 0.08),
+                0 8px 18px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        touch-action: none;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transform-origin: 50% 85%;
+        will-change: transform;
+
+        transform: translate3d(var(--rest-x), var(--rest-y), 0) rotate(var(--rest-rot));
+        transition:
+                transform 0.4s cubic-bezier(0.25, 1, 0.35, 1),
+                box-shadow 0.3s ease,
+                opacity 0.3s ease;
+
+        animation: gentleIntro 0.65s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
+        animation-delay: var(--intro-delay);
+    }
+
+    @keyframes gentleIntro {
+        0% {
+            transform: translate3d(var(--fan-x), calc(var(--fan-y) - 6px), 0) rotate(var(--fan-rot));
+            opacity: 0.7;
+        }
+        100% {
+            transform: translate3d(var(--rest-x), var(--rest-y), 0) rotate(var(--rest-rot));
+            opacity: 1;
+        }
+    }
+
+    .polaroid-stack:hover .polaroid-card:not([data-top="true"]),
+    .polaroid-stack.is-dragging-active .polaroid-card:not([data-top="true"]) {
+        transform: translate3d(var(--fan-x), var(--fan-y), 0) rotate(var(--fan-rot));
+        box-shadow:
+                0 6px 14px rgba(0, 0, 0, 0.1),
+                0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .polaroid-card.is-dragging {
+        transition: none !important;
+        cursor: grabbing;
+        box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                0 30px 60px rgba(0, 0, 0, 0.12);
+    }
+
+    .polaroid-card.is-animating {
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.35, 1), opacity 0.3s ease !important;
+    }
+
+    .photo-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        background-color: #1a1a1a;
+        border-radius: 1px;
+        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .photo-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+        display: block;
+    }
+
+    .vintage-glare {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.02) 40%,
+                rgba(0, 0, 0, 0.04) 100%
+        );
+        pointer-events: none;
+    }
+
+    .polaroid-caption {
+        margin-top: auto;
+        margin-bottom: 0;
+        padding-top: 8px;
+        font-family: 'Caveat', cursive, sans-serif;
+        font-size: 1.35rem;
+        color: #222;
+        text-align: center;
+        line-height: 1.1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+<script>
+    function setupPolaroidStacks() {
+        const stacks = document.querySelectorAll<HTMLElement>('.polaroid-stack');
+
+        stacks.forEach((stack) => {
+            let cards = Array.from(stack.querySelectorAll<HTMLElement>('.polaroid-card'));
+            if (cards.length <= 1) return;
+
+            let isDragging = false;
+            let startX = 0;
+            let startY = 0;
+            let startTime = 0;
+            let currentX = 0;
+            let currentY = 0;
+            let topCard: HTMLElement | null = null;
+
+            function getTopCard(): HTMLElement {
+                return cards.reduce((highest, card) => {
+                    const zHigh = parseInt(highest.style.zIndex || '0', 10);
+                    const zCard = parseInt(card.style.zIndex || '0', 10);
+                    return zCard > zHigh ? card : highest;
+                }, cards[0]);
+            }
+
+            function refreshMarkers() {
+                topCard = getTopCard();
+                cards.forEach((c) => {
+                    c.setAttribute('data-top', c === topCard ? 'true' : 'false');
+                });
+            }
+
+            function onPointerDown(e: PointerEvent) {
+                if (isDragging) return;
+                topCard = getTopCard();
+
+                if (!topCard.contains(e.target as Node)) return;
+
+                isDragging = true;
+                stack.classList.add('is-dragging-active');
+
+                startX = e.clientX;
+                startY = e.clientY;
+                startTime = Date.now();
+                currentX = 0;
+                currentY = 0;
+
+                topCard.classList.remove('is-animating');
+                topCard.classList.add('is-dragging');
+                topCard.setPointerCapture(e.pointerId);
+            }
+
+            function onPointerMove(e: PointerEvent) {
+                if (!isDragging || !topCard) return;
+
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+
+                const restRot = parseFloat(topCard.style.getPropertyValue('--rest-rot')) || 0;
+                const dragRot = restRot + currentX * 0.05;
+
+                topCard.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotate(${dragRot}deg) scale(1.03)`;
+            }
+
+            function onPointerUp(e: PointerEvent) {
+                if (!isDragging || !topCard) return;
+                isDragging = false;
+
+                try {
+                    topCard.releasePointerCapture(e.pointerId);
+                } catch {}
+
+                topCard.classList.remove('is-dragging');
+
+                const distance = Math.hypot(currentX, currentY);
+                const timeDiff = Date.now() - startTime;
+
+                // Klick-Erkennung (< 8px & < 250ms)
+                if (distance < 8 && timeDiff < 250) {
+                    topCard.style.transform = '';
+                    stack.classList.remove('is-dragging-active');
+
+                    window.dispatchEvent(new CustomEvent('open-polaroid-modal', {
+                        detail: {
+                            src: topCard.dataset.src,
+                            caption: topCard.dataset.caption,
+                            description: topCard.dataset.description,
+                        }
+                    }));
+                    return;
+                }
+
+                // Drag & Drop Logik
+                const flickThreshold = 85;
+
+                if (distance > flickThreshold) {
+                    sendToBack(topCard, currentX, currentY);
+                } else {
+                    topCard.classList.add('is-animating');
+                    topCard.style.transform = '';
+
+                    setTimeout(() => {
+                        topCard?.classList.remove('is-animating');
+                        stack.classList.remove('is-dragging-active');
+                    }, 400);
+                }
+            }
+
+            function sendToBack(card: HTMLElement, dirX: number, dirY: number) {
+                card.classList.add('is-animating');
+
+                const throwX = dirX * 1.4;
+                const throwY = dirY * 1.4;
+                const currentRot = parseFloat(card.style.getPropertyValue('--rest-rot')) || 0;
+
+                card.style.transform = `translate3d(${throwX}px, ${throwY}px, 0) rotate(${currentRot + dirX * 0.08}deg) scale(0.97)`;
+                card.style.opacity = '0.4';
+
+                setTimeout(() => {
+                    cards.forEach((c) => {
+                        const currentZ = parseInt(c.style.zIndex || '1', 10);
+                        c.style.zIndex = (currentZ + 1).toString();
+                    });
+
+                    card.style.zIndex = '1';
+                    card.style.opacity = '1';
+                    card.style.transform = '';
+
+                    refreshMarkers();
+
+                    setTimeout(() => {
+                        card.classList.remove('is-animating');
+                        stack.classList.remove('is-dragging-active');
+                    }, 400);
+                }, 180);
+            }
+
+            stack.addEventListener('pointerdown', onPointerDown);
+            stack.addEventListener('pointermove', onPointerMove);
+            stack.addEventListener('pointerup', onPointerUp);
+            stack.addEventListener('pointercancel', onPointerUp);
+
+            refreshMarkers();
+        });
+    }
+
+    setupPolaroidStacks();
+    document.addEventListener('astro:page-load', setupPolaroidStacks);
+</script>

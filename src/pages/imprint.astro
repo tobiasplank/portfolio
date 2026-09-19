@@ -1,6 +1,47 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import Grid from "@/ui/Grid.astro";
+import Heading from "@/ui/Heading.astro";
+import "@/styles/legal.css";
 ---
 
 <Layout title="Imprint">
+    <Hero
+            staticText="Imprint"
+            animated={false}
+            compact={true}
+            tagSize="h1"
+    />
+    <Grid cols={1} rows={1}>
+        <div class="box bg-solid legal-content">
+            <Heading tagName="h2" tagSize="h3">
+                Site Notice
+            </Heading>
+            <p>
+                Tobias Plank<br>
+                c/o COCENTER<br>
+                Koppoldstr. 1<br>
+                86551 Aichach
+            </p>
+
+            <Heading tagName="h2" tagSize="h3">
+                Contact
+            </Heading>
+            <p>
+                Phone: <a href="tel:+4915168495502">+49 1516 8495502</a><br>
+                E-mail: <a href="mailto:info@tobias-plank.de">info@tobias-plank.de</a>
+            </p>
+
+            <Heading tagName="h2" tagSize="h3">
+                Person responsible for editorial
+            </Heading>
+            <p>
+                Tobias Plank<br>
+                c/o COCENTER<br>
+                Koppoldstr. 1<br>
+                86551 Aichach
+            </p>
+        </div>
+    </Grid>
 </Layout>

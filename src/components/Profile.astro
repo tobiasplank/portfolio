@@ -1,0 +1,215 @@
+---
+import profileData from "@/data/about/profile.json";
+import experienceData from "@/data/about/experience.json";
+import Label from "@/components/ui/Label.astro";
+import Heading from "@/components/ui/Heading.astro";
+
+// 1. Alter dynamisch berechnen
+function calculateAge(birthDateStr: string): number {
+    const today = new Date();
+    const birthDate = new Date(birthDateStr);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
+// 2. Relevante Berufserfahrung berechnen
+function calculateRelevantExperience(experienceList: typeof experienceData.experience): string {
+    const relevantRoles = experienceList.filter(item => item.grade !== "Apprentice");
+    if (!relevantRoles.length) return "0 Jahre";
+
+    // Finde das früheste Startdatum der relevanten Rollen
+    const startDates = relevantRoles.map(r => new Date(r.start).getTime());
+    const earliestStart = new Date(Math.min(...startDates));
+    const now = new Date();
+
+    const diffMonths = (now.getFullYear() - earliestStart.getFullYear()) * 12 + (now.getMonth() - earliestStart.getMonth());
+    const years = Math.floor(diffMonths / 12);
+    const months = diffMonths % 12;
+
+    if (years === 0) {
+        return `${months} ${months === 1 ? 'month' : 'months'}`;
+    }
+    if (months === 0) {
+        return `${years} ${years === 1 ? 'year' : 'years'}`;
+    }
+    return `${years} ${years === 1 ? 'year' : 'years'}, ${months} ${months === 1 ? 'month' : 'months'}`;
+}
+
+const age = calculateAge(profileData.birthdate);
+const formattedBirthdate = new Date(profileData.birthdate).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+});
+const experienceTime = calculateRelevantExperience(experienceData.experience);
+---
+
+<div class="profile-card">
+    <div class="profile-header">
+        <div class="profile-title-row">
+            <h2 class="profile-name">{profileData.first_name} {profileData.last_name}</h2>
+            <div class="nickname-list">
+                {profileData.nicknames.map((nick) => (
+                    <Label size="S">"{nick}"</Label>
+                ))}
+            </div>
+        </div>
+        <div class="job-status">
+            <span class="job-title">{profileData.grade} {profileData.job_title}</span>
+        </div>
+    </div>
+
+    <div class="profile-grid">
+        <div class="profile-item">
+            <Heading tagName="h4" tagSize="h4">Country</Heading>
+            <span class="value">{profileData.country}</span>
+        </div>
+
+        <div class="profile-item">
+            <Heading tagName="h4" tagSize="h4">Location</Heading>
+            <span class="value">{profileData.location}</span>
+        </div>
+
+        <div class="profile-item">
+            <Heading tagName="h4" tagSize="h4">Age / Birthday</Heading>
+            <span class="value">{age} years <span class="muted-text">({formattedBirthdate})</span></span>
+        </div>
+
+        <div class="profile-item">
+            <Heading tagName="h4" tagSize="h4">Experience</Heading>
+            <span class="value accent-highlight">{experienceTime}</span>
+        </div>
+    </div>
+
+    <div class="profile-sections">
+        <div class="section-group">
+            <Heading tagName="h4" tagSize="h4">Volunteer work</Heading>
+            <div class="tag-list">
+                {profileData.volunteer_work.map((item) => (
+                    <Label size="M">{item}</Label>
+                ))}
+            </div>
+        </div>
+
+        <div class="section-group">
+            <Heading tagName="h4" tagSize="h4">Hobbies</Heading>
+            <div class="tag-list">
+                {profileData.hobbies.map((item) => (
+                    <Label size="M">{item}</Label>
+                ))}
+            </div>
+        </div>
+
+        <div class="section-group">
+            <Heading tagName="h4" tagSize="h4">Currently Learning</Heading>
+            <div class="tag-list">
+                {profileData.learning.map((item) => (
+                    <Label size="M" liveStatus={true}>{item}</Label>
+                ))}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-card {
+        padding: calc(var(--grid-cell) * 4);
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 3);
+        color: var(--color-text);
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .profile-header {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 1);
+        border-bottom: 1px solid var(--color-line);
+        padding-bottom: calc(var(--grid-cell) * 3);
+    }
+
+    .profile-title-row {
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .profile-name {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        font-size: 1.75rem;
+        font-weight: 500;
+        line-height: 1.2;
+        color: var(--color-text);
+    }
+
+    .nickname-list {
+        display: flex;
+        align-items: flex-end;
+        gap: 0.35rem;
+        margin-bottom: 5px;
+    }
+
+    .job-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: "Departure Mono", monospace;
+        font-size: 0.9rem;
+        color: var(--color-accent);
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: calc(var(--grid-cell) * 3);
+        padding-bottom: calc(var(--grid-cell) * 2);
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    .profile-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .value {
+        font-size: 1rem;
+        color: var(--color-text);
+    }
+
+    .muted-text {
+        color: var(--color-muted);
+        font-size: 0.95rem;
+    }
+
+    .accent-highlight {
+        color: var(--color-accent);
+        font-weight: 500;
+    }
+
+    .profile-sections {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 2.5);
+    }
+
+    .section-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+</style>
