@@ -10,7 +10,7 @@
       "employment_type": "Full-time",
       "start": "2025-06-25",
       "end": "",
-      "description": "In my current position I work a lot with various technologies and tools. I am responsible for the maintenance, optimization as well as automation of our Nutanix environment. I also administrate tools like CheckMK and Graylog for monitoring and logging of the application landscape.\n\nTo do all of that I also work a lot with Linux operating systems, especially Ubuntu. In general I'm a big fan of Linux and use Fedora for my own computers. For the infrastructure of this website I use a minimal Debian with Incus as a virtual machine manager.",
+      "description": "In my current position I work a lot with various technologies and tools. I am responsible for the maintenance, optimization as well as automation of an Nutanix environment. I also learned how to administrate tools like CheckMK and Graylog for monitoring and logging of the application landscape.\n\nTo do all of that I also work a lot with Linux operating systems, especially Ubuntu. In general I'm a big fan of Linux and use Fedora for my own computers. For the infrastructure of this website I use a minimal Debian with Incus as a virtual machine manager.",
       "projects": [],
       "certifications": [],
       "skills": []
