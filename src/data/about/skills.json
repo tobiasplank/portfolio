@@ -1,0 +1,17 @@
+{
+  "skills": [
+    {
+      "name": "Nutanix",
+      "level": 3,
+      "skills": [],
+      "description": ""
+    }
+  ],
+  "levels": {
+    "1": "Beginner",
+    "2": "Associate",
+    "3": "Professional",
+    "4": "Senior",
+    "5": "Expert"
+  }
+}

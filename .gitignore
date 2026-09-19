@@ -14,14 +14,16 @@ pnpm-debug.log*
 # file types
 *.env
 *.env.production
-*.json
 *.xml
-*.yaml
 *.mjs
 
 # macOS-specific files
 .DS_Store
 
 # single files
-AGENTS.md*
-CLAUDE.md*
+AGENTS.md
+CLAUDE.md
+qodana.yaml
+script.js
+styles.css
+tsconfig.json
