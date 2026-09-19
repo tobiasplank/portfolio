@@ -1,0 +1,13 @@
+{
+  "first_name": "Tobias",
+  "last_name": "Plank",
+  "nicknames": ["Tobi", "Goobi"],
+  "country": "Germany",
+  "location": "Munich Metropolitan Area",
+  "birthdate": "2006-04-13",
+  "grade": "Associate",
+  "job_title": "System Engineer",
+  "volunteer_work": ["SPD", "Jusos"],
+  "hobbies": ["Computer science", "Photography"],
+  "learning": ["Incus", "OpenTofu", "Ansible", "Astro"]
+}

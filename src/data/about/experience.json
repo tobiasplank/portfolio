@@ -1,0 +1,49 @@
+{
+  "experience": [
+    {
+      "grade": "Associate",
+      "title": "System Engineer",
+      "company": "MediaMarktSaturn",
+      "location_city": "Ingolstadt",
+      "location_country": "Germany",
+      "location_type": "Hybrid",
+      "employment_type": "Full-time",
+      "start": "2025-06-25",
+      "end": "",
+      "description": "In my current position I work a lot with various technologies and tools. I am responsible for the maintenance, optimization as well as automation of our Nutanix environment. I also administrate tools like CheckMK and Graylog for monitoring and logging of the application landscape.\n\nTo do all of that I also work a lot with Linux operating systems, especially Ubuntu. In general I'm a big fan of Linux and use Fedora for my own computers. For the infrastructure of this website I use a minimal Debian with Incus as a virtual machine manager.",
+      "projects": [],
+      "certifications": [],
+      "skills": []
+    },
+    {
+      "grade": "Apprentice",
+      "title": "IT-Specialist",
+      "company": "MediaMarktSaturn",
+      "location_city": "Ingolstadt",
+      "location_country": "Germany",
+      "location_type": "Hybrid",
+      "employment_type": "Apprenticeship",
+      "start": "2022-09-01",
+      "end": "2025-06-24",
+      "description": "My apprenticeship was where it all started. I rotated through various departments. I was always particularly drawn to the hardware-focused teams like Computing and Networking.\n\nThat's where I learned the most too. How to work with Linux and Windows servers, automate tasks with Bash scripts or PowerShell. Of course, I also got my hands dirty with networking fundamentals and configuring switches. Java and Python basics were part of the mix as well.\n\nWhat really sparked my interest about my work in the networking platform though was the physical contact with hardware in data centers and administering our central Nutanix environment in Frankfurt along with the application landscape running on top of it. As my final project, I also set up a Proxmox cluster for us apprentices.\n\nLooking back at the time before my apprenticeship, it's kind of wild how much I've developed both professionally and personally, and it does make me a little proud. Especially since I was even awarded the Bavarian State Prize for my graduation. c:",
+      "projects": [],
+      "certifications": [],
+      "skills": []
+    },
+    {
+      "grade": "",
+      "title": "Freelance Tech Writer",
+      "company": "Work in progress",
+      "location_city": "Munich Metropolitan Area",
+      "location_country": "Germany",
+      "location_type": "",
+      "employment_type": "Freelance",
+      "start": "2026-09-13",
+      "end": "",
+      "description": "I plan to start a blog for technical writers. That's why I'm currently working on my portfolio and the underlying infrastructure to create an enterprise-level foundation to the best of my ability.\n\nMy vision is to collaborate with tech-savvy colleagues on a dedicated website to write articles about current developments and best practices in the industry, as well as about the fundamentals.\n\nThe focus is on providing knowledge to everyone for free and with low barriers to access, not on making a profit.",
+      "projects": [],
+      "certifications": [],
+      "skills": []
+    }
+  ]
+}

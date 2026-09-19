@@ -1,0 +1,28 @@
+{
+  "certifications": [
+    {
+      "name": "Nutanix Certified",
+      "grade": "Professional",
+      "description": "",
+      "company": "Nutanix",
+      "category": "Multicloud Infrastructure",
+      "badge": "",
+      "start": "2025-11-27",
+      "end": "2028-11-28",
+      "link": "https://www.credly.com/badges/4a4b7f2e-8d55-4ea7-9652-ebbba1281543",
+      "skills": []
+    },
+    {
+      "name": "Nutanix Certified",
+      "grade": "Associate",
+      "category": "",
+      "company": "Nutanix",
+      "badge": "",
+      "start": "2025-11-27",
+      "end": "2028-11-26",
+      "link": "https://www.credly.com/badges/262bd222-9765-484e-a769-850e6330334a",
+      "skills": [],
+      "description": ""
+    }
+  ]
+}
