@@ -1,33 +1,33 @@
 {
   "photos": [
     {
-      "src": "/public/about_photos/portrait.png",
+      "src": "/about_photos/portrait.png",
       "caption": "That's me! ^-^ (Nov, 2025)",
       "alt": "Self Portrait",
       "description": "This portrait was actually taken for the local election campaign 2026. However, the photographer has given me permission to use the photo for myself. ☺️"
     },
     {
-      "src": "/public/about_photos/stephens_cathedral.png",
+      "src": "/about_photos/stephens_cathedral.png",
       "caption": "'St. Stephen's Cathedral (Mar, 2026)'",
       "alt": "'St. Stephen's Cathedral, Vienna'",
       "description": "On the first evening of my vacation in Vienna with my best friend, I walked across Stephansplatz. That's where I took this picture of the cathedral. The construction was completed in 1578. Wow! 😯"
     },
     {
-      "src": "/public/about_photos/schoenbrunn_palace.png",
+      "src": "/about_photos/schoenbrunn_palace.png",
       "caption": "Schönbrunn Palace (Mar, 2026)",
       "alt": "Schönbrunn Palace, Vienna",
       "description": "On the second day, we visited Schönbrunn Palace. For me, it’s a must-see on any trip to Vienna. You can easily spend almost an entire day there. I also love to snack the famous Mozartkugeln while I’m there. 🤭",
       "positionY": "80%"
     },
     {
-      "src": "/public/about_photos/kunsthistorisches_museum.png",
+      "src": "/about_photos/kunsthistorisches_museum.png",
       "caption": "Kunsthistorisches Museum (Mar, 2026)",
       "alt": "Kunsthistorisches Museum, Vienna",
       "description": "That was the last photo from my vacation in Vienna, and it’s also my absolute favorite. You can see the statue of “Theseus Defeating the Centaur”. What I like best is the café inside. The museum’s own black tea blend alone is worth a visit. 😋",
       "positionY": "0%"
     },
     {
-      "src": "/public/about_photos/neuburg_palace.png",
+      "src": "/about_photos/neuburg_palace.png",
       "caption": "Neuburg Palace (May, 2026)",
       "alt": "Neuburg Palace",
       "description": "I was in Neuburg with my work bestie, who also loves photography, and we spent the whole evening taking pictures of the palace there. 😊",
