@@ -4,8 +4,69 @@ import Layout from "@/layouts/Layout.astro";
 
 // Page-specific content.
 import Hero from "@/components/Hero.astro";
+import Grid from "@/components/ui/Grid.astro";
+import Feature from "@/components/Feature.astro";
+import Link from "@/components/ui/Link.astro";
+import ContactMe from "@/components/ui/ContactMe.astro";
 ---
 
 <Layout title="Home">
     <Hero />
+    <Grid minHeight="calc(var(--grid-cell) * 78)" >
+        <div class="box bg-solid box--centered">
+            <Feature
+                icon="user"
+                heading="About me"
+                description="Here you'll find a short biography about me and my interests."
+                iconColor="rgb(92, 182, 255)"
+            />
+            <Link href="/about" variant="secondary">Readme</Link>
+        </div>
+        <div class="box bg-solid box--centered">
+            <Feature
+                    icon="blog"
+                    heading="Blog (WIP)"
+                    description="In my Blog I'll post about various topics related to IT."
+                    iconColor="rgb(178, 255, 92)"
+            />
+            <Link href="/blog" variant="secondary">Read the blog</Link>
+        </div>
+        <div class="box bg-solid box--centered">
+            <Feature
+                    icon="list-box"
+                    heading="Projects (WIP)"
+                    description="In this section I'll publish details to my most interesting projects."
+                    iconColor="rgb(181, 92, 255)"
+            />
+            <Link href="/projects" variant="secondary">My projects</Link>
+        </div>
+        <div class="box bg-solid box--centered">
+            <Feature
+                    icon="mail"
+                    heading="Contact me"
+                    description="Feel free to contact me if you have any inquiries or just want to say hi."
+                    iconColor="rgb(255, 226, 92)"
+            />
+            <Link href="/contactme" variant="secondary">Say hello</Link>
+        </div>
+    </Grid>
 </Layout>
+
+<style>
+    .box--centered {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: calc(var(--grid-cell) * 2);
+    }
+
+    .box--centered :global(.feature) {
+        flex: 0 1 auto;
+        padding-block: 0;
+    }
+
+    .box--centered :global(a) {
+        margin-top: 0;
+    }
+</style>

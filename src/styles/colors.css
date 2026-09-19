@@ -1,0 +1,35 @@
+:root {
+    --color-bg: rgb(6, 8, 15);
+    --color-surface: rgb(28 28 28);
+    --color-text: rgb(251 251 248);
+    --color-muted: rgb(148 148 148);
+    --color-accent: rgb(190 92 255);
+    --color-line: rgb(60 60 60);
+
+    --hero-glow-core: rgb(162 66 204 / 38%);
+    --hero-glow-medium: rgb(162 66 204 / 21%);
+    --hero-glow-soft: rgb(162 66 204 / 8%);
+    --hero-glow-faint: rgb(162 66 204 / 2%);
+
+    --grid-cell: 0.5rem;
+    --grid-half-cell: 0.25rem;
+    --grid-fine-line: rgb(130 130 130 / 6%);
+    --layout-max-width: calc(var(--grid-cell) * 150);
+    --layout-gutter: calc(var(--grid-cell) * 2);
+}
+
+[data-theme="light"] {
+    --color-bg: rgb(251 248 242);
+    --color-surface: rgb(255 255 255);
+    --color-text: rgb(36 36 36);
+    --color-muted: rgb(96 96 96);
+    --color-line: rgb(200 200 200);
+    --color-accent: rgb(200 110 0);
+
+    --hero-glow-core: rgb(210 138 35 / 38%);
+    --hero-glow-medium: rgb(210 138 35 / 21%);
+    --hero-glow-soft: rgb(210 138 35 / 8%);
+    --hero-glow-faint: rgb(210 138 35 / 2%);
+
+    --grid-fine-line: rgb(180 180 180 / 6%);
+}

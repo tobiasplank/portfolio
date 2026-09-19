@@ -1,41 +1,82 @@
 ---
 import { baseData } from "@/data/siteData.ts";
-
 const { title = baseData.title, description = baseData.description } = Astro.props;
 ---
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <!-- Apply the saved or system theme before the first paint. -->
+
+    <!-- Favicon (initial leer bzw. Fallback) -->
+    <link id="app-favicon" rel="icon" type="image/svg+xml" href="/favicon_dark.svg" />
+
     <script is:inline>
-        const savedTheme = localStorage.getItem("theme");
+        function updateFavicon(isDark) {
+            const baseHref = isDark ? "/favicon_dark.svg" : "/favicon_light.svg";
 
-        const systemPrefersDark = window.matchMedia(
-            "(prefers-color-scheme: dark)",
-        ).matches;
+            // WICHTIG: Cache-Buster zwingt Firefox zum sofortigen Neuzeichnen des Tabs
+            const newHref = baseHref + "?v=" + Date.now();
 
-        const initialTheme =
-            savedTheme === "light" || savedTheme === "dark"
-                ? savedTheme
-                : systemPrefersDark
-                    ? "dark"
-                    : "light";
+            // Bestehende Favicon-Tags entfernen
+            const oldLinks = document.querySelectorAll("link[rel*='icon']");
+            oldLinks.forEach((link) => link.remove());
 
-        document.documentElement.dataset.theme = initialTheme;
+            // Neuen Link-Tag erstellen und in den Head einhängen
+            const newLink = document.createElement("link");
+            newLink.id = "app-favicon";
+            newLink.rel = "icon";
+            newLink.type = "image/svg+xml";
+            newLink.href = newHref;
+            document.head.appendChild(newLink);
+        }
+
+        function checkIsDark() {
+            const html = document.documentElement;
+            const theme = html.dataset.theme;
+
+            // Erkennt sowohl data-theme="dark" als auch class="dark" (Tailwind)
+            if (theme) return theme === "dark";
+            if (html.classList.contains("dark")) return true;
+
+            // Fallback auf localStorage oder Betriebssystem
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme) return savedTheme === "dark";
+
+            return window.matchMedia("(prefers-color-scheme: dark)").matches;
+        }
+
+        function applyTheme() {
+            const isDark = checkIsDark();
+
+            // Synchronisiere data-theme & Klasse, falls noch nicht geschehen
+            document.documentElement.dataset.theme = isDark ? "dark" : "light";
+            updateFavicon(isDark);
+        }
+
+        // 1. Sofort vor dem ersten Rendern ausführen
+        applyTheme();
+
+        // 2. DOM-Observer: Reagiert auf 'data-theme' UND auf 'class' (z.B. class="dark")
+        const observer = new MutationObserver(() => {
+            const isDark = checkIsDark();
+            updateFavicon(isDark);
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme", "class"],
+        });
+
+        // 3. Reagiert auf OS-Wechsel
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+            if (!localStorage.getItem("theme")) {
+                document.documentElement.dataset.theme = e.matches ? "dark" : "light";
+                updateFavicon(e.matches);
+            }
+        });
     </script>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-        rel="stylesheet"
-    />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
-        rel="stylesheet"
-    />
 </head>

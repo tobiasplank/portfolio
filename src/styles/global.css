@@ -1,44 +1,25 @@
-:root {
-    --color-bg: rgb(6, 8, 15);
-    --color-surface: rgb(51 51 51);
-    --color-text: rgb(251 251 248);
-    --color-muted: rgb(111 111 111);
-    --color-accent: rgb(190 92 255);
-    --color-line: rgb(60 60 60);
-
-    --hero-glow-core: rgb(162 66 204 / 38%);
-    --hero-glow-medium: rgb(162 66 204 / 21%);
-    --hero-glow-soft: rgb(162 66 204 / 8%);
-    --hero-glow-faint: rgb(162 66 204 / 2%);
-
-    --grid-cell: 0.5rem;
-    --grid-half-cell: 0.25rem;
-    --grid-fine-line: rgb(120 120 120 / 6%);
-    --layout-max-width: calc(var(--grid-cell) * 150);
-    --layout-gutter: calc(var(--grid-cell) * 2);
+@font-face {
+    font-family: "Inter";
+    src: url("/public/fonts/Inter.ttf") format("truetype");
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
 }
 
-[data-theme="light"] {
-    --color-bg: rgb(251 248 242);
-    --color-surface: rgb(255 255 255);
-    --color-text: rgb(36 36 36);
-    --color-line: rgb(200 200 200);
-    --color-accent: rgb(200 110 0);
-
-    --hero-glow-core: rgb(210 138 35 / 38%);
-    --hero-glow-medium: rgb(210 138 35 / 21%);
-    --hero-glow-soft: rgb(210 138 35 / 8%);
-    --hero-glow-faint: rgb(210 138 35 / 2%);
-
-    --grid-fine-line: rgb(180 180 180 / 6%);
+@font-face {
+    font-family: "Plus Jakarta Sans";
+    src: url("/public/fonts/PlusJakartaSans.ttf") format("truetype");
+    font-weight: 200 800;
+    font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: "Departure Mono";
     src:
-        url("/fonts/DepartureMono.woff2") format("woff2"),
-        url("/fonts/DepartureMono.woff") format("woff"),
-        url("/fonts/DepartureMono.otf") format("opentype");
+        url("/public/fonts/DepartureMono.woff2") format("woff2"),
+        url("/public/fonts/DepartureMono.woff") format("woff"),
+        url("/public/fonts/DepartureMono.otf") format("opentype");
     font-display: swap;
     font-style: normal;
     font-weight: 400;
@@ -133,8 +114,10 @@ a {
 }
 
 .site-main {
+    display: flex;
+    flex-direction: column;
     min-width: 0;
-    padding: calc(var(--grid-cell) * 5);
+    min-height: 0;
     background: transparent;
 }
 

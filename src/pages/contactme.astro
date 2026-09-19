@@ -1,0 +1,18 @@
+---
+// Page layout.
+import Layout from "@/layouts/Layout.astro";
+
+// Page-specific content.
+import Hero from "@/components/Hero.astro";
+import Linktree from "@/components/ContactMe.astro";
+---
+
+<Layout title="Contact me">
+    <Hero
+        staticText="Contact me"
+        animated={false}
+        compact={true}
+        tagSize="h1"
+    />
+    <Linktree />
+</Layout>

@@ -1,6 +1,21 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import ComingSoon from "@/components/ComingSoon.astro"
 ---
 
 <Layout title="Blog">
+    <Hero
+        staticText="Blog"
+        animated={false}
+        compact={true}
+        tagSize="h1"
+    />
+    <ComingSoon
+        icon="blog"
+        subheading="The blog section is planned for the future"
+        description="Here I'll publish blog posts to different IT related topics.<br>
+        For example about basic knowledge, guides or<br>
+        personal comments on specific topics."
+    />
 </Layout>

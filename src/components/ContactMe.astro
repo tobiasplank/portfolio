@@ -1,0 +1,156 @@
+---
+import Link from "@/components/ui/Link.astro";
+
+import mailIcon from "pixelarticons/svg/mail-solid.svg?url";
+import videoCallIcon from "pixelarticons/svg/video-call-solid.svg?url";
+import linkedinIcon from "pixelarticons/svg/linkedin-2-solid.svg?url";
+import githubIcon from "pixelarticons/svg/github-solid.svg?url";
+import discordIcon from "pixelarticons/svg/discord-solid.svg?url";
+import mastodonIcon from "pixelarticons/svg/mastodon-solid.svg?url";
+
+const links = [
+    {
+        label: "Mail",
+        description: "Directly wire me an email.",
+        href: "mailto:info@tobias-plank.de",
+        icon: mailIcon,
+        external: false
+    },
+    {
+        label: "Video Call",
+        description: "Book a personal video call with me.",
+        href: "https://calendar.proton.me/bookings#vnBOELbMc1zfseObG8KnUTRbJ5_xx7vKfufkuqEwjhM=",
+        icon: videoCallIcon,
+        external: true
+    },
+    {
+        label: "LinkedIn",
+        description: "Connect with me on LinkedIn.",
+        href: "https://www.linkedin.com/in/planktobias",
+        icon: linkedinIcon, external: true
+    },
+    {
+        label: "GitHub",
+        description: "Checkout my projects on GitHub.",
+        href: "https://github.com/tobiasplank",
+        icon: githubIcon,
+        external: true
+    },
+    {
+        label: "Discord",
+        description: "Reach out to me on Discord.",
+        href: "https://discordapp.com/users/520244930191425566",
+        icon: discordIcon,
+        external: true
+    },
+    {
+        label: "Mastodon",
+        description: "Follow me on the Fediverse.",
+        href: "https://mastodon.social/@tobiasplank",
+        icon: mastodonIcon,
+        external: true
+    },
+];
+---
+
+<div class="linktree">
+    <div class="linktree__links">
+        {links.map((link) => (
+            <Link
+                href={link.href}
+                variant="secondary"
+                class="linktree__card"
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
+            >
+                <span class="linktree__icon" style={`--icon-url: url("${link.icon}")`} aria-hidden="true"></span>
+                <span class="linktree__content">
+                    <strong>{link.label}</strong>
+                    <span>{link.description}</span>
+                </span>
+            </Link>
+        ))}
+    </div>
+</div>
+
+<style>
+    .linktree {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        align-items: center;
+        justify-content: center;
+        padding: calc(var(--grid-cell) * 3) calc(var(--grid-cell) * 2);
+    }
+
+    .linktree__links {
+        display: flex;
+        width: min(100%, 28rem);
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 2);
+    }
+
+    .linktree__links :global(a.linktree__card) {
+        display: flex;
+        min-height: calc(var(--grid-cell) * 14);
+        width: 100%;
+        align-items: center;
+        justify-content: flex-start;
+        gap: calc(var(--grid-cell) * 3);
+        padding: calc(var(--grid-cell) * 3);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-line);
+        text-align: left;
+        white-space: normal;
+    }
+
+    .linktree__links :global(a.linktree__card:hover) {
+        color: var(--color-accent);
+        background-color: var(--color-surface);
+        border-color: var(--color-accent);
+    }
+
+    .linktree__content {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) / 2);
+        text-align: left;
+    }
+
+    .linktree__content strong {
+        font-size: 1.05rem;
+    }
+
+    .linktree__content span {
+        color: var(--color-muted);
+        font-size: 0.9rem;
+        line-height: 1.45;
+    }
+
+    .linktree__icon {
+        flex: 0 0 auto;
+        display: block;
+        width: calc(var(--grid-cell) * 5);
+        height: calc(var(--grid-cell) * 5);
+        background-color: currentColor;
+        mask: var(--icon-url) center / contain no-repeat;
+        -webkit-mask: var(--icon-url) center / contain no-repeat;
+    }
+
+    @media (max-width: 40rem) {
+        .linktree {
+            padding: calc(var(--grid-cell) * 2) 0;
+        }
+
+        .linktree__links :global(a.linktree__card) {
+            min-height: calc(var(--grid-cell) * 12);
+            gap: calc(var(--grid-cell) * 2);
+            padding: calc(var(--grid-cell) * 2);
+        }
+
+        .linktree__icon {
+            width: calc(var(--grid-cell) * 4);
+            height: calc(var(--grid-cell) * 4);
+        }
+    }
+</style>

@@ -1,0 +1,142 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export interface Props extends HTMLAttributes<"div"> {
+    cols?: number | string;
+    rows?: number | string;
+    minHeight?: string;
+    showTopLine?: boolean;
+    showBottomLine?: boolean;
+    alignItems?: "start" | "center" | "end" | "stretch";
+    justifyItems?: "start" | "center" | "end" | "stretch";
+}
+
+const {
+    cols = 2,
+    rows = 2,
+    minHeight = "auto",
+    showTopLine = true,
+    showBottomLine = true,
+    alignItems = "stretch",
+    justifyItems = "stretch",
+    class: className,
+    style,
+    ...rest
+} = Astro.props;
+
+const templateCols = typeof cols === "number" ? `repeat(${cols}, minmax(0, 1fr))` : cols;
+const templateRows = typeof rows === "number" ? `repeat(${rows}, minmax(0, 1fr))` : rows;
+---
+
+<div
+        class:list={[
+            "custom-grid",
+            {
+                "custom-grid--top-line": showTopLine,
+                "custom-grid--bottom-line": showBottomLine,
+            },
+            className,
+        ]}
+        style={{
+            "--grid-cols": templateCols,
+            "--grid-rows": templateRows,
+            "--grid-min-height": minHeight,
+            "--grid-align-items": alignItems,
+            "--grid-justify-items": justifyItems,
+            ...(typeof style === "object" ? style : {}),
+        }}
+        {...rest}
+>
+    <slot />
+</div>
+
+<style>
+    .custom-grid {
+        position: relative;
+        isolation: isolate;
+        display: grid;
+
+        /* Bündig mit den vertikalen Layout-Seitenlinien */
+        min-height: var(--grid-min-height);
+
+        /* Spalten & Zeilen */
+        grid-template-columns: var(--grid-cols);
+        grid-template-rows: var(--grid-rows);
+        align-items: var(--grid-align-items);
+        justify-items: var(--grid-justify-items);
+
+        background-color: transparent;
+    }
+
+    /* Standard für alle direkten Kind-Elemente */
+    .custom-grid > :global(*) {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        background-color: transparent;
+        border-right: 1px solid var(--color-line);
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    /* Rechte Kante der letzten Spalte entfernen (liegt auf der Seitenlinie des Layouts) */
+    .custom-grid > :global(*:nth-child(2n)) {
+        border-right: none;
+    }
+
+    /* Deckender Hintergrund */
+    .custom-grid > :global(.bg-solid) {
+        background-color: var(--color-bg);
+    }
+
+    /* Leicht hervorgehobener Hintergrund */
+    .custom-grid > :global(.bg-surface) {
+        background-color: var(--color-surface);
+    }
+
+    /*
+     * Durchgehende 100vw-Linie am OBEREN Rand:
+     * Liegt mit z-index: 2 über den Zellen-Hintergründen und schneidet diese sauber ab.
+     */
+    .custom-grid--top-line::before {
+        position: absolute;
+        z-index: 3;
+        top: 0;
+        left: 50%;
+        width: 100vw;
+        height: 1px;
+        content: "";
+        background: var(--color-line);
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
+
+    /*
+     * Durchgehende 100vw-Linie am UNTEREN Rand:
+     * Liegt mit bottom: 0 exakt auf dem Zellrand (verhindert 2px Doppellinie).
+     */
+    .custom-grid--bottom-line::after {
+        position: absolute;
+        z-index: 2;
+        bottom: 0;
+        left: 50%;
+        width: 100vw;
+        height: 1px;
+        content: "";
+        background: var(--color-line);
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
+
+    /* Mobile Anpassung */
+    @media (max-width: 40rem) {
+        .custom-grid {
+            width: calc(100% + (var(--grid-cell) * 4));
+            margin-inline: calc(var(--grid-cell) * -2);
+            grid-template-columns: 1fr;
+        }
+
+        .custom-grid > :global(*) {
+            border-right: none;
+        }
+    }
+</style>

@@ -1,0 +1,75 @@
+name: Deploy Astro Website
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Build Astro SSG
+        run: |
+          npm ci
+          npm run build
+
+      # 1. Tailscale Mesh beitreten
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          tags: tag:ci-cd
+
+      # 2. Incus CLI installieren und Remote per mTLS konfigurieren
+      - name: Setup Incus Remote
+        env:
+          INCUS_CERT: ${{ secrets.INCUS_ACTIONS_CERT }}
+          INCUS_KEY: ${{ secrets.INCUS_ACTIONS_KEY }}
+          INCUS_HOST: ${{ secrets.INCUS_GATEWAY_IP }}
+        run: |
+          # Incus Client installieren
+          sudo mkdir -p /etc/apt/keyrings
+          sudo curl -fsSL https://pkgs.zabbly.com/key.asc -o /etc/apt/keyrings/zabbly.asc
+          echo "deb [signed-by=/etc/apt/keyrings/zabbly.asc] https://pkgs.zabbly.com/incus/stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/zabbly-incus-stable.list
+          sudo apt-get update && sudo apt-get install -y incus-client
+
+          # Zertifikate hinterlegen
+          mkdir -p ~/.config/incus
+          echo "$INCUS_CERT" > ~/.config/incus/client.crt
+          echo "$INCUS_KEY" > ~/.config/incus/client.key
+          chmod 600 ~/.config/incus/client.key
+
+          # Incus Remote Host registrieren (Port 8443)
+          incus remote add production "https://${INCUS_HOST}:8443" --accept-certificate --auth-type tls
+
+      # 3. Atomares Deployment via Incus API
+      - name: Atomic Deploy into LXC Container
+        run: |
+          RELEASE_ID=$(date +%Y%m%d%H%M%S)
+          RELEASE_DIR="/var/www/astro/releases/$RELEASE_ID"
+
+          echo "🚀 Creating Release: $RELEASE_DIR"
+          incus exec production:astro-prod -- mkdir -p "$RELEASE_DIR"
+
+          echo "📦 Pushing Artifacts to Container..."
+          incus file push -r dist/* "production:astro-prod$RELEASE_DIR/"
+
+          echo "🔄 Switching Symlink Atomically..."
+          incus exec production:astro-prod -- sh -c "
+            ln -sfn $RELEASE_DIR /var/www/astro/current_tmp && \
+            mv -Tf /var/www/astro/current_tmp /var/www/astro/current
+          "
+
+          echo "🧹 Cleaning Old Releases (Keep last 5)..."
+          incus exec production:astro-prod -- sh -c "
+            cd /var/www/astro/releases && ls -1t | tail -n +6 | xargs -r rm -rf
+          "

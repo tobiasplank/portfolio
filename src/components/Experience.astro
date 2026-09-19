@@ -1,0 +1,423 @@
+---
+import experienceData from "@/data/about/experience.json";
+import Heading from "@/components/ui/Heading.astro";
+
+interface Position {
+    grade?: string;
+    title: string;
+    company: string;
+    logo?: string;
+    badge?: string;
+    description?: string;
+    location_city?: string;
+    location_country?: string;
+    location_type?: string;
+    employment_type?: string;
+    start: string;
+    end: string;
+    projects?: string[];
+    certifications?: string[];
+    skills?: string[];
+}
+
+const rawPositions: Position[] = ((experienceData as any).positions || (experienceData as any).experience || []) as Position[];
+
+function formatMonthYear(dateStr: string): string {
+    if (!dateStr) return "Present";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+function calculateDuration(startStr: string, endStr: string): string {
+    const start = new Date(startStr);
+    const end = endStr ? new Date(endStr) : new Date();
+    let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    if (end.getDate() >= start.getDate() - 5) {
+        months += 1;
+    }
+    if (months < 1) months = 1;
+
+    const years = Math.floor(months / 12);
+    const remMonths = months % 12;
+
+    const parts: string[] = [];
+    if (years > 0) parts.push(`${years} ${years === 1 ? "yr" : "yrs"}`);
+    if (remMonths > 0) parts.push(`${remMonths} ${remMonths === 1 ? "mo" : "mos"}`);
+    return parts.join(" ") || "1 mo";
+}
+
+// Group positions by company
+interface CompanyGroup {
+    company: string;
+    logo?: string;
+    totalDuration: string;
+    latestLocation: string;
+    latestLocationType: string;
+    latestTimestamp: number;
+    positions: {
+        id: string;
+        data: Position;
+        fullTitle: string;
+        dateRange: string;
+        duration: string;
+    }[];
+}
+
+const companyMap = new Map<string, Position[]>();
+rawPositions.forEach((pos) => {
+    const existing = companyMap.get(pos.company) || [];
+    existing.push(pos);
+    companyMap.set(pos.company, existing);
+});
+
+let globalIndex = 0;
+const rawCompanies: CompanyGroup[] = Array.from(companyMap.entries()).map(([companyName, posList]) => {
+    // Sort reverse chronological within company (newest first)
+    const sorted = [...posList].sort((a, b) => {
+        const aStart = new Date(a.start).getTime();
+        const bStart = new Date(b.start).getTime();
+        return bStart - aStart;
+    });
+
+    const earliestStart = sorted.reduce((min, p) => (new Date(p.start) < new Date(min) ? p.start : min), sorted[0].start);
+    const hasCurrent = sorted.some((p) => !p.end);
+    const latestEnd = hasCurrent ? "" : sorted.reduce((max, p) => (new Date(p.end) > new Date(max) ? p.end : max), sorted[0].end);
+
+    const latestPos = sorted[0];
+    const locParts = [latestPos.location_city, latestPos.location_country].filter(Boolean).join(", ");
+    const latestTimestamp = hasCurrent ? Number.MAX_SAFE_INTEGER : (latestPos.end ? new Date(latestPos.end).getTime() : new Date(latestPos.start).getTime());
+
+    return {
+        company: companyName,
+        logo: latestPos.logo || latestPos.badge || "",
+        totalDuration: calculateDuration(earliestStart, latestEnd),
+        latestLocation: locParts,
+        latestLocationType: latestPos.location_type || "",
+        latestTimestamp,
+        positions: sorted.map((p) => {
+            const id = `pos-${globalIndex++}`;
+            const fullTitle = p.grade ? `${p.grade} ${p.title}` : p.title;
+            const startFmt = formatMonthYear(p.start);
+            const endFmt = formatMonthYear(p.end);
+            const dateRange = `${startFmt} - ${endFmt}`;
+            const duration = calculateDuration(p.start, p.end);
+            return {
+                id,
+                data: p,
+                fullTitle,
+                dateRange,
+                duration,
+            };
+        }),
+    };
+});
+
+// Sort companies by latest timestamp descending (newest company first)
+const companies = rawCompanies.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
+---
+
+<div class="experience-card">
+    <div class="experience-header">
+        <Heading tagName="h4" tagSize="h4">Experience</Heading>
+    </div>
+
+    <div class="company-list">
+        {companies.map((comp) => (
+            <div class="company-item">
+                <div class="company-item__header">
+                    <div class="company-logo">
+                        {comp.logo ? (
+                            <img src={comp.logo} alt={comp.company} class="company-logo__img" />
+                        ) : (
+                            <span class="company-logo__placeholder">{comp.company.charAt(0)}</span>
+                        )}
+                    </div>
+                    <div class="company-info">
+                        <h3 class="company-name">{comp.company}</h3>
+                        <div class="company-meta">
+                            <span>{comp.totalDuration}</span>
+                            {comp.latestLocation && (
+                                <>
+                                    <span class="meta-dot">·</span>
+                                    <span>{comp.latestLocation}</span>
+                                </>
+                            )}
+                            {comp.latestLocationType && (
+                                <>
+                                    <span class="meta-dot">·</span>
+                                    <span>{comp.latestLocationType}</span>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    {comp.positions.map((pos, idx) => (
+                        <div
+                            class:list={["timeline-item", { "is-active": pos.id === "pos-0" }]}
+                            data-position-id={pos.id}
+                            role="button"
+                            tabindex="0"
+                            aria-selected={pos.id === "pos-0" ? "true" : "false"}
+                        >
+                            <div class="timeline-indicator">
+                                <span class="timeline-dot" />
+                            </div>
+                            <div class="position-content">
+                                <div class="position-title">{pos.fullTitle}</div>
+                                {pos.data.employment_type && (
+                                    <div class="position-type">{pos.data.employment_type}</div>
+                                )}
+                                <div class="position-dates">
+                                    <span>{pos.dateRange}</span>
+                                    <span class="meta-dot">·</span>
+                                    <span class="position-duration">{pos.duration}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ))}
+    </div>
+</div>
+
+<script>
+    function setupExperienceSelection() {
+        const items = document.querySelectorAll<HTMLElement>("[data-position-id]");
+        if (!items.length) return;
+
+        items.forEach((item) => {
+            item.addEventListener("click", () => {
+                const posId = item.getAttribute("data-position-id");
+                if (!posId) return;
+
+                // Update active timeline item
+                items.forEach((el) => {
+                    const isActive = el === item;
+                    el.classList.toggle("is-active", isActive);
+                    el.setAttribute("aria-selected", isActive ? "true" : "false");
+                });
+
+                // Dispatch global event for ExperienceDetail component
+                window.dispatchEvent(
+                    new CustomEvent("experience-position-selected", {
+                        detail: { positionId: posId },
+                    })
+                );
+            });
+
+            // Keyboard navigation
+            item.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    item.click();
+                }
+            });
+        });
+    }
+
+    setupExperienceSelection();
+    document.addEventListener("astro:page-load", setupExperienceSelection);
+</script>
+
+<style>
+    .experience-card {
+        padding: calc(var(--grid-cell) * 4);
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 3);
+        color: var(--color-text);
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .experience-header {
+        border-bottom: 1px solid var(--color-line);
+        padding-bottom: calc(var(--grid-cell) * 2);
+    }
+
+    .company-list {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 4);
+    }
+
+    .company-item {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 1.5);
+    }
+
+    .company-item__header {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--grid-cell) * 2);
+    }
+
+    .company-logo {
+        width: calc(var(--grid-cell) * 5.5);
+        height: calc(var(--grid-cell) * 5.5);
+        border-radius: 6px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .company-logo__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .company-logo__placeholder {
+        font-family: "Departure Mono", monospace;
+        font-size: 1.20rem;
+        font-weight: 500;
+        color: var(--color-accent);
+    }
+
+    .company-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        min-width: 0;
+    }
+
+    .company-name {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        font-size: 1.15rem;
+        font-weight: 500;
+        color: var(--color-text);
+        line-height: 1.2;
+    }
+
+    .company-meta {
+        font-family: "Departure Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    .meta-dot {
+        color: var(--color-muted);
+    }
+
+    .timeline {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--grid-cell) * 1.5);
+        padding-left: 48px;
+    }
+
+    .timeline-item {
+        position: relative;
+        display: flex;
+        padding: calc(var(--grid-cell) * 1.5) calc(var(--grid-cell) * 2);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 150ms ease, border-color 150ms ease;
+        border: 1px solid transparent;
+    }
+
+    .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -28px;
+        width: 2px;
+        background: var(--color-line);
+        top: 22px;
+        bottom: calc(var(--grid-cell) * 1.5 + 0.45rem);
+        z-index: 0;
+    }
+
+    .timeline-item:not(:last-child)::before {
+        bottom: calc(-1 * (var(--grid-cell) * 1.5 + 22px));
+    }
+
+    .timeline-item:hover {
+        background: var(--color-surface);
+        border-color: var(--color-line);
+    }
+
+    .timeline-item.is-active {
+        background: var(--color-surface);
+        border-color: var(--color-accent);
+    }
+
+    .timeline-indicator {
+        position: absolute;
+        left: -48px;
+        width: 42px;
+        top: 17px;
+        height: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+
+    .timeline-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--color-bg);
+        border: 2px solid var(--color-line);
+        transition: border-color 150ms ease, background-color 150ms ease;
+        box-sizing: border-box;
+    }
+
+    .timeline-item:hover .timeline-dot {
+        border-color: var(--color-accent);
+    }
+
+    .timeline-item.is-active .timeline-dot {
+        border-color: var(--color-accent);
+        background-color: var(--color-accent);
+        box-shadow: 0 0 8px var(--color-accent);
+    }
+
+    .position-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        min-width: 0;
+    }
+
+    .position-title {
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: var(--color-text);
+        line-height: 1.3;
+    }
+
+    .position-type {
+        font-size: 0.95rem;
+        color: var(--color-muted);
+    }
+
+    .position-dates {
+        font-family: "Departure Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    .position-duration {
+        color: var(--color-text);
+    }
+</style>
