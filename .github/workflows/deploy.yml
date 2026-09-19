@@ -11,40 +11,35 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 1. install pnpm before setup-node (for automatic pnpm Store cache)
+      # 1. Install pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
+      # 2. Install node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
 
-      # 2. Install & Build Dependencies
+      # 3. Install & Build Dependencies
       - name: Install & Build
         env:
           PIXELARTICONS_KEY: ${{ secrets.PIXELARTICONS_KEY }}
         run: |
-          # 1. Packages sauber installieren
           pnpm install --frozen-lockfile
-
-          # 2. Pixelarticons Pro Assets laden / freischalten
           pnpm exec pixelarticons upgrade --key="$PIXELARTICONS_KEY"
-
-          # 3. Astro Projekt bauen
           pnpm build
 
-      # 3. Join Tailscale Mesh
+      # 4. Join Tailscale Mesh
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
         with:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
           tags: tag:ci-cd
 
-      # 4. Install Incus Client CLI & Configure mTLS Certificates
+      # 5. Setup Incus Remote
       - name: Setup Incus Remote
         env:
           INCUS_CERT: ${{ secrets.INCUS_ACTIONS_CERT }}
@@ -63,11 +58,25 @@ jobs:
 
           incus remote add production "https://${INCUS_HOST}:8443" --accept-certificate --auth-type tls
 
-      # 5. Atomic Zero-Downtime Deployment via Incus API
+      # 6. Atomic Deploy into LXC Container
       - name: Atomic Deploy into LXC Container
         run: |
           RELEASE_ID=$(date +%Y%m%d%H%M%S)
           RELEASE_DIR="/var/www/astro/releases/$RELEASE_ID"
 
-          echo "🚀 Creating Release Directory: $RELEASE_DIR"
-          incus exec production:astro-prod -- mkdir -p "$RELEA
+          echo "🚀 Creating Release: $RELEASE_DIR"
+          incus exec production:astro-prod -- mkdir -p "$RELEASE_DIR"
+
+          echo "📦 Pushing Artifacts to Container..."
+          incus file push -r dist/* "production:astro-prod$RELEASE_DIR/"
+
+          echo "🔄 Switching Symlink Atomically..."
+          incus exec production:astro-prod -- sh -c "
+            ln -sfn $RELEASE_DIR /var/www/astro/current_tmp && \
+            mv -Tf /var/www/astro/current_tmp /var/www/astro/current
+          "
+
+          echo "🧹 Cleaning Old Releases (Keep last 5)..."
+          incus exec production:astro-prod -- sh -c "
+            cd /var/www/astro/releases && ls -1t | tail -n +6 | xargs -r rm -rf
+          "
