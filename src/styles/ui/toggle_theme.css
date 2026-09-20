@@ -18,8 +18,8 @@
     cursor: pointer;
 
     transition:
-        color 180ms ease,
-        background-color 180ms ease;
+        color 220ms ease,
+        background-color 220ms ease;
 }
 
 .theme-toggle::before,
@@ -87,7 +87,7 @@
             inset 0 0 0 4px var(--color-bg);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
     .theme-toggle:hover {
         color: var(--color-surface);
         background: var(--color-text);
@@ -102,16 +102,19 @@
     }
 }
 
-.theme-toggle:active {
+.theme-toggle:active,
+.theme-toggle--flash {
     color: var(--color-surface);
     background: var(--color-text);
 }
 
-.theme-toggle:active .theme-icon--regular {
+.theme-toggle:active .theme-icon--regular,
+.theme-toggle--flash .theme-icon--regular {
     display: none;
 }
 
-.theme-toggle:active .theme-icon--solid {
+.theme-toggle:active .theme-icon--solid,
+.theme-toggle--flash .theme-icon--solid {
     display: block;
 }
 
