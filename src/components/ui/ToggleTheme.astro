@@ -73,6 +73,24 @@ import moonSolidIcon from "pixelarticons/svg/moon-solid.svg?url";
     updateButtonState(getCurrentTheme());
 
     let flashTimer: ReturnType<typeof setTimeout> | null = null;
+    let isTouch = false;
+
+    button?.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "mouse") {
+            button.classList.add("theme-toggle--hover");
+        }
+    });
+
+    button?.addEventListener("pointerleave", () => {
+        button.classList.remove("theme-toggle--hover");
+    });
+
+    button?.addEventListener("pointerdown", (event) => {
+        isTouch = event.pointerType === "touch" || event.pointerType === "pen";
+        if (isTouch) {
+            button.classList.remove("theme-toggle--hover");
+        }
+    });
 
     button?.addEventListener("click", () => {
         const nextTheme: Theme =
@@ -86,12 +104,16 @@ import moonSolidIcon from "pixelarticons/svg/moon-solid.svg?url";
         updateButtonState(nextTheme);
 
         if (button) {
-            button.classList.add("theme-toggle--flash");
-            if (flashTimer) clearTimeout(flashTimer);
-            flashTimer = setTimeout(() => {
-                button.classList.remove("theme-toggle--flash");
-            }, 300);
             button.blur();
+
+            if (isTouch) {
+                button.classList.remove("theme-toggle--hover");
+                button.classList.add("theme-toggle--flash");
+                if (flashTimer) clearTimeout(flashTimer);
+                flashTimer = setTimeout(() => {
+                    button.classList.remove("theme-toggle--flash");
+                }, 300);
+            }
         }
     });
 </script>

@@ -87,33 +87,18 @@
             inset 0 0 0 4px var(--color-bg);
 }
 
-@media (hover: hover) and (pointer: fine) {
-    .theme-toggle:hover {
-        color: var(--color-surface);
-        background: var(--color-text);
-    }
-
-    .theme-toggle:hover .theme-icon--regular {
-        display: none;
-    }
-
-    .theme-toggle:hover .theme-icon--solid {
-        display: block;
-    }
-}
-
-.theme-toggle:active,
+.theme-toggle--hover,
 .theme-toggle--flash {
     color: var(--color-surface);
     background: var(--color-text);
 }
 
-.theme-toggle:active .theme-icon--regular,
+.theme-toggle--hover .theme-icon--regular,
 .theme-toggle--flash .theme-icon--regular {
     display: none;
 }
 
-.theme-toggle:active .theme-icon--solid,
+.theme-toggle--hover .theme-icon--solid,
 .theme-toggle--flash .theme-icon--solid {
     display: block;
 }
