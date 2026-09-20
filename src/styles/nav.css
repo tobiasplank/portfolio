@@ -122,7 +122,7 @@
         z-index: 5;
         top: 100%;
         left: -1px;
-        min-width: 12.5rem;
+        min-width: calc(var(--grid-cell) * 36.5);
         border: 1px solid var(--color-line);
         background: var(--color-bg);
 

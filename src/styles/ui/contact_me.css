@@ -107,7 +107,7 @@
     top: 100%;
     right: -1px;
 
-    min-width: 12.5rem;
+    min-width: calc(var(--grid-cell) * 25);
 
     border: 1px solid var(--color-line);
     background: var(--color-bg);
@@ -249,11 +249,5 @@
     .contact-me__social-icon,
     .contact-me__item-chevron {
         transition: none;
-    }
-}
-
-@media (max-width: 40rem) {
-    .contact-me__menu {
-        width: 12.5rem;
     }
 }
