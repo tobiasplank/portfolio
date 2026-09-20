@@ -212,7 +212,7 @@
     .hero {
         --hero-content-inset: calc(var(--grid-cell) * 3);
         width: calc(100% + (var(--grid-cell) * 4));
-        height: min(70svh, calc(var(--grid-cell) * 46));
+        height: min(70svh, calc(var(--grid-cell) * 36));
         margin-top: calc(var(--grid-cell) * -2);
         margin-inline: calc(var(--grid-cell) * -2);
     }
@@ -223,7 +223,7 @@
     }
 
     .hero--compact {
-        height: calc(var(--grid-cell) * 22);
+        height: calc(var(--grid-cell) * 16);
         --hero-content-inset: calc(var(--grid-cell) * 3);
     }
 }
