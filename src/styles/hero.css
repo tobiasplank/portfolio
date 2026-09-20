@@ -212,13 +212,14 @@
     .hero {
         --hero-content-inset: calc(var(--grid-cell) * 3);
         width: calc(100% + (var(--grid-cell) * 4));
-        height: min(70svh, calc(var(--grid-cell) * 52));
+        height: min(70svh, calc(var(--grid-cell) * 46));
         margin-top: calc(var(--grid-cell) * -2);
         margin-inline: calc(var(--grid-cell) * -2);
     }
 
+    .hero > :is(h1, h2, h3, h4, h5, h6, .heading),
     .hero > .heading--h1 {
-        font-size: clamp(2rem, 9vw, 3.5rem);
+        font-size: clamp(1.5rem, 8vw, 2.5rem);
     }
 
     .hero--compact {
