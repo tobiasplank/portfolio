@@ -6,6 +6,8 @@ export interface Props {
     description?: string;
     icon?: string;
     iconColor?: string;
+    iconColorDark?: string;
+    iconColorLight?: string;
 }
 
 const {
@@ -13,7 +15,9 @@ const {
     subheading,
     description,
     icon,
-    iconColor = "var(--color-accent)",
+    iconColor = "var(--color-theme-accent)",
+    iconColorDark,
+    iconColorLight,
 } = Astro.props;
 
 const pixelartIcons = import.meta.glob("/node_modules/pixelarticons/svg/*.svg", {
@@ -24,11 +28,17 @@ const pixelartIcons = import.meta.glob("/node_modules/pixelarticons/svg/*.svg", 
 const iconUrl = icon
     ? pixelartIcons[`/node_modules/pixelarticons/svg/${icon}.svg`]
     : undefined;
+
+const resolvedDark = iconColorDark ?? iconColor;
+const resolvedLight = iconColorLight ?? iconColor;
 ---
 
 <div
     class="feature"
-    style={`--feature-icon-color: ${iconColor};`}
+    style={{
+        "--feature-icon-color-dark": resolvedDark,
+        "--feature-icon-color-light": resolvedLight,
+    }}
 >
     <div class="feature__content">
         <div class="feature__icon">
@@ -96,10 +106,14 @@ const iconUrl = icon
         display: block;
         width: calc(var(--grid-cell) * 5);
         height: calc(var(--grid-cell) * 5);
-        color: var(--feature-icon-color);
+        color: var(--feature-icon-color-dark, var(--color-theme-accent));
         background-color: currentColor;
         mask: var(--icon-url) center / contain no-repeat;
         -webkit-mask: var(--icon-url) center / contain no-repeat;
+    }
+
+    :global([data-theme="light"]) .feature__svg {
+        color: var(--feature-icon-color-light, var(--feature-icon-color-dark, var(--color-theme-accent)));
     }
 
     .feature__description {

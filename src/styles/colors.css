@@ -3,8 +3,15 @@
     --color-surface: rgb(28 28 28);
     --color-text: rgb(251 251 248);
     --color-muted: rgb(148 148 148);
-    --color-accent: rgb(190 92 255);
     --color-line: rgb(60 60 60);
+
+    --color-theme-accent: rgb(190 92 255);
+    --color-accent: var(--color-theme-accent);
+
+    --color-accent-blue: rgb(92 182 255);
+    --color-accent-green: rgb(178 255 92);
+    --color-accent-purple: rgb(181 92 255);
+    --color-accent-yellow: rgb(255 226 92);
 
     --hero-glow-core: rgb(162 66 204 / 38%);
     --hero-glow-medium: rgb(162 66 204 / 21%);
@@ -24,7 +31,14 @@
     --color-text: rgb(36 36 36);
     --color-muted: rgb(96 96 96);
     --color-line: rgb(200 200 200);
-    --color-accent: rgb(200 110 0);
+
+    --color-theme-accent: rgb(200 110 0);
+    --color-accent: var(--color-theme-accent);
+
+    --color-accent-blue: rgb(0 114 206);
+    --color-accent-green: rgb(68 138 20);
+    --color-accent-purple: rgb(138 43 226);
+    --color-accent-yellow: rgb(190 120 0);
 
     --hero-glow-core: rgb(210 138 35 / 38%);
     --hero-glow-medium: rgb(210 138 35 / 21%);

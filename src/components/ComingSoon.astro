@@ -5,6 +5,9 @@ export interface Props {
     subheading?: string;
     description?: string;
     icon?: string;
+    iconColor?: string;
+    iconColorDark?: string;
+    iconColorLight?: string;
 }
 
 const {
@@ -12,6 +15,9 @@ const {
     subheading = "This part is currently under construction.",
     description,
     icon,
+    iconColor = "var(--color-theme-accent)",
+    iconColorDark,
+    iconColorLight,
 } = Astro.props;
 
 const pixelartIcons = import.meta.glob("/node_modules/pixelarticons/svg/*.svg", {
@@ -22,9 +28,18 @@ const pixelartIcons = import.meta.glob("/node_modules/pixelarticons/svg/*.svg", 
 const iconUrl = icon
     ? pixelartIcons[`/node_modules/pixelarticons/svg/${icon}.svg`]
     : undefined;
+
+const resolvedDark = iconColorDark ?? iconColor;
+const resolvedLight = iconColorLight ?? iconColor;
 ---
 
-<div class="box bg-solid coming-soon">
+<div
+    class="box bg-solid coming-soon"
+    style={{
+        "--coming-soon-icon-color-dark": resolvedDark,
+        "--coming-soon-icon-color-light": resolvedLight,
+    }}
+>
     <div class="coming-soon__content">
         <div class="coming-soon__icon">
             {iconUrl && <span class="coming-soon__svg" style={`--icon-url: url("${iconUrl}")`} aria-hidden="true"></span>}
@@ -84,10 +99,14 @@ const iconUrl = icon
         display: block;
         width: 4rem;
         height: 4rem;
-        color: var(--color-accent);
+        color: var(--coming-soon-icon-color-dark, var(--color-theme-accent));
         background-color: currentColor;
         mask: var(--icon-url) center / contain no-repeat;
         -webkit-mask: var(--icon-url) center / contain no-repeat;
+    }
+
+    :global([data-theme="light"]) .coming-soon__svg {
+        color: var(--coming-soon-icon-color-light, var(--coming-soon-icon-color-dark, var(--color-theme-accent)));
     }
 
     .coming-soon__description {
