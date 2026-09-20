@@ -7,12 +7,11 @@ import Hero from "@/components/Hero.astro";
 import Grid from "@/components/ui/Grid.astro";
 import Feature from "@/components/Feature.astro";
 import Link from "@/components/ui/Link.astro";
-import ContactMe from "@/components/ui/ContactMe.astro";
 ---
 
 <Layout title="Home">
     <Hero />
-    <Grid minHeight="calc(var(--grid-cell) * 78)" >
+    <Grid minHeight="calc(var(--grid-cell) * 72)" >
         <div class="box bg-solid box--centered">
             <Feature
                 icon="user"
@@ -68,5 +67,11 @@ import ContactMe from "@/components/ui/ContactMe.astro";
 
     .box--centered :global(a) {
         margin-top: 0;
+    }
+
+    @media (max-width: 40rem) {
+        .box--centered {
+            padding-block: calc(var(--grid-cell) * 3);
+        }
     }
 </style>

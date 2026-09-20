@@ -251,3 +251,10 @@
         transition: none;
     }
 }
+
+@media (max-width: 40rem) {
+    .contact-me__trigger {
+        gap: calc(var(--grid-cell) * 0.5);
+        padding-inline: var(--grid-cell);
+    }
+}

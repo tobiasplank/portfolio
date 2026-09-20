@@ -101,3 +101,9 @@
         transition: none;
     }
 }
+
+@media (max-width: 40rem) {
+    .theme-toggle {
+        width: calc(var(--grid-cell) * 6);
+    }
+}
