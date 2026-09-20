@@ -4,6 +4,8 @@ import "@/styles/nav.css";
 import Link from "@/components/ui/Link.astro";
 import ToggleTheme from "@/components/ui/ToggleTheme.astro";
 import ContactMe from "@/components/ui/ContactMe.astro";
+import menuIcon from "pixelarticons/svg/menu.svg?url";
+import chevronRightIcon from "pixelarticons/svg/chevron-right.svg?url";
 
 const links = [
     { label: "Home", href: "/" },
@@ -14,6 +16,42 @@ const links = [
 ---
 
 <nav class="nav" aria-label="Main navigation">
+    <div class="nav__mobile-menu">
+        <button class="nav__mobile-trigger" type="button">
+            <span
+                class="nav__mobile-icon"
+                style={`--icon-url: url("${menuIcon}")`}
+                aria-hidden="true"
+            ></span>
+            <span class="nav__mobile-label">Menu</span>
+        </button>
+
+        <div class="nav__mobile-dropdown">
+            <ul class="nav__mobile-list">
+                {
+                    links.map((link) => (
+                        <li class="nav__mobile-item">
+                            <a href={link.href} class="nav__mobile-link">
+                                <span class="nav__mobile-link-label">{link.label}</span>
+
+                                <span
+                                    class="nav__mobile-item-chevron nav__mobile-item-chevron--left"
+                                    style={`--icon-url: url("${chevronRightIcon}")`}
+                                    aria-hidden="true"
+                                ></span>
+
+                                <span
+                                    class="nav__mobile-item-chevron nav__mobile-item-chevron--right"
+                                    style={`--icon-url: url("${chevronRightIcon}")`}
+                                    aria-hidden="true"
+                                ></span>
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+    </div>
 
     <ul class="nav__list">
         {

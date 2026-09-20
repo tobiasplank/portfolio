@@ -217,6 +217,10 @@
         margin-inline: calc(var(--grid-cell) * -2);
     }
 
+    .hero > .heading--h1 {
+        font-size: clamp(2rem, 9vw, 3.5rem);
+    }
+
     .hero--compact {
         height: calc(var(--grid-cell) * 22);
         --hero-content-inset: calc(var(--grid-cell) * 3);
