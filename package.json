@@ -12,7 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/node": "^11.1.6",
     "astro": "^7.2.9",
+    "mongodb": "^7.6.0",
     "pixelarticons": "^2.3.0"
   }
 }
