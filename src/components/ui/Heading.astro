@@ -13,15 +13,49 @@ import type { HTMLAttributes } from "astro/types";
 interface Props extends HTMLAttributes<"h1"> {
     tagName: keyof typeof headingOptions;
     tagSize: keyof typeof headingOptions;
+    animated?: boolean;
 }
 
-const { tagName, tagSize, class: className, ...rest } = Astro.props;
+const { tagName, tagSize, animated = false, class: className, ...rest } = Astro.props;
 const Tag = tagName;
 ---
 
-<Tag class:list={["heading", `heading--${tagSize}`, className]} {...rest}>
+<Tag
+    class:list={[
+        "heading",
+        `heading--${tagSize}`,
+        { "heading--animated": animated },
+        className,
+    ]}
+    {...rest}
+>
     <slot />
 </Tag>
+
+{animated && (
+    <script>
+        const animatedHeadings = document.querySelectorAll<HTMLElement>(".heading--animated");
+
+        if (animatedHeadings.length > 0) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("heading--visible");
+                        } else {
+                            entry.target.classList.remove("heading--visible");
+                        }
+                    });
+                },
+                {
+                    threshold: 0.15,
+                }
+            );
+
+            animatedHeadings.forEach((heading) => observer.observe(heading));
+        }
+    </script>
+)}
 
 <style>
     .heading {
@@ -56,6 +90,42 @@ const Tag = tagName;
 
     .heading--h6 {
         font-size: 1rem;
+    }
+
+    .heading--animated {
+        opacity: 0;
+        filter: blur(8px);
+        transform: translateY(0.6rem);
+        will-change: opacity, filter, transform;
+    }
+
+    .heading--animated.heading--visible {
+        animation: heading-title-in 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    }
+
+    @keyframes heading-title-in {
+        from {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(0.6rem);
+        }
+        to {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .heading--animated {
+            opacity: 1;
+            filter: none;
+            transform: none;
+        }
+
+        .heading--animated.heading--visible {
+            animation: none;
+        }
     }
 
     @media (max-width: 40rem) {
