@@ -88,6 +88,9 @@ jobs:
             ln -sfn $RELEASE_DIR /var/www/astro/current_tmp && \
             mv -Tf /var/www/astro/current_tmp /var/www/astro/current
           "
+          
+          echo "🔄 Restarting Astro SSR Service..."
+          incus exec production:astro-prod -- systemctl restart astro
 
           echo "🧹 Cleaning Old Releases (Keep last 5)..."
           incus exec production:astro-prod -- sh -c "
