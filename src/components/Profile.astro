@@ -1,13 +1,44 @@
 ---
-import profileData from "@/data/about/profile.json";
-import experienceData from "@/data/about/experience.json";
+import { getPortfolioData, type Profile, type Position } from "@/lib/portfolio-cache";
 import Label from "@/components/ui/Label.astro";
 import Heading from "@/components/ui/Heading.astro";
 
-// 1. Alter dynamisch berechnen
-function calculateAge(birthDateStr: string): number {
+// 1. Fetch cached data (handles DB queries & deduplication in the background)
+const { profile, experience } = await getPortfolioData();
+
+// 2. Fallback to prevent null errors
+const defaultProfile: Profile = {
+    first_name: "",
+    last_name: "",
+    nicknames: [],
+    birthdate: "2000-01-01",
+    grade: "",
+    job_title: "",
+    location: "",
+    country: "",
+    volunteer_work: [],
+    hobbies: [],
+    learning: [],
+};
+
+const profileData: Profile = {
+    ...defaultProfile,
+    ...(profile ?? {}),
+    nicknames: profile?.nicknames ?? [],
+    volunteer_work: profile?.volunteer_work ?? [],
+    hobbies: profile?.hobbies ?? [],
+    learning: profile?.learning ?? [],
+};
+
+/**
+ * Dynamically calculates age from a birthdate string.
+ */
+function calculateAge(birthDateStr?: string | null): number {
+    if (!birthDateStr) return 0;
     const today = new Date();
     const birthDate = new Date(birthDateStr);
+    if (isNaN(birthDate.getTime())) return 0;
+
     let age = today.getFullYear() - birthDate.getFullYear();
     const m = today.getMonth() - birthDate.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
@@ -16,13 +47,19 @@ function calculateAge(birthDateStr: string): number {
     return age;
 }
 
-// 2. Relevante Berufserfahrung berechnen
-function calculateRelevantExperience(experienceList: typeof experienceData.experience): string {
-    const relevantRoles = experienceList.filter(item => item.grade !== "Apprentice");
-    if (!relevantRoles.length) return "0 Jahre";
+/**
+ * Calculates total relevant work experience (excluding apprentice roles).
+ */
+function calculateRelevantExperience(experienceList: Position[]): string {
+    const relevantRoles = experienceList.filter((item: Position) => item.grade !== "Apprentice");
+    if (!relevantRoles.length) return "0 years";
 
-    // Finde das früheste Startdatum der relevanten Rollen
-    const startDates = relevantRoles.map(r => new Date(r.start).getTime());
+    const startDates = relevantRoles
+        .map((r: Position) => new Date(r.start || "").getTime())
+        .filter((time: number) => !isNaN(time));
+
+    if (!startDates.length) return "0 years";
+
     const earliestStart = new Date(Math.min(...startDates));
     const now = new Date();
 
@@ -31,21 +68,26 @@ function calculateRelevantExperience(experienceList: typeof experienceData.exper
     const months = diffMonths % 12;
 
     if (years === 0) {
-        return `${months} ${months === 1 ? 'month' : 'months'}`;
+        return `${months} ${months === 1 ? "month" : "months"}`;
     }
     if (months === 0) {
-        return `${years} ${years === 1 ? 'year' : 'years'}`;
+        return `${years} ${years === 1 ? "year" : "years"}`;
     }
-    return `${years} ${years === 1 ? 'year' : 'years'}, ${months} ${months === 1 ? 'month' : 'months'}`;
+    return `${years} ${years === 1 ? "year" : "years"}, ${months} ${months === 1 ? "month" : "months"}`;
 }
 
 const age = calculateAge(profileData.birthdate);
-const formattedBirthdate = new Date(profileData.birthdate).toLocaleDateString("de-DE", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric"
-});
-const experienceTime = calculateRelevantExperience(experienceData.experience);
+
+const birthDateObj = new Date(profileData.birthdate || "");
+const formattedBirthdate = !isNaN(birthDateObj.getTime())
+    ? birthDateObj.toLocaleDateString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    })
+    : "";
+
+const experienceTime = calculateRelevantExperience(experience);
 ---
 
 <div class="profile-card">
@@ -53,7 +95,7 @@ const experienceTime = calculateRelevantExperience(experienceData.experience);
         <div class="profile-title-row">
             <h2 class="profile-name">{profileData.first_name} {profileData.last_name}</h2>
             <div class="nickname-list">
-                {profileData.nicknames.map((nick) => (
+                {(profileData.nicknames ?? []).map((nick: string) => (
                     <Label size="S">"{nick}"</Label>
                 ))}
             </div>
@@ -75,8 +117,8 @@ const experienceTime = calculateRelevantExperience(experienceData.experience);
         </div>
 
         <div class="profile-item">
-            <Heading tagName="h4" tagSize="h4">Age / Birthday</Heading>
-            <span class="value">{age} years <span class="muted-text">({formattedBirthdate})</span></span>
+            <Heading tagName="h4" tagSize="h4">Age</Heading>
+            <span class="value">{age} years</span>
         </div>
 
         <div class="profile-item">
@@ -89,7 +131,7 @@ const experienceTime = calculateRelevantExperience(experienceData.experience);
         <div class="section-group">
             <Heading tagName="h4" tagSize="h4">Volunteer work</Heading>
             <div class="tag-list">
-                {profileData.volunteer_work.map((item) => (
+                {(profileData.volunteer_work ?? []).map((item: string) => (
                     <Label size="M">{item}</Label>
                 ))}
             </div>
@@ -98,7 +140,7 @@ const experienceTime = calculateRelevantExperience(experienceData.experience);
         <div class="section-group">
             <Heading tagName="h4" tagSize="h4">Hobbies</Heading>
             <div class="tag-list">
-                {profileData.hobbies.map((item) => (
+                {(profileData.hobbies ?? []).map((item: string) => (
                     <Label size="M">{item}</Label>
                 ))}
             </div>
@@ -107,7 +149,7 @@ const experienceTime = calculateRelevantExperience(experienceData.experience);
         <div class="section-group">
             <Heading tagName="h4" tagSize="h4">Currently Learning</Heading>
             <div class="tag-list">
-                {profileData.learning.map((item) => (
+                {(profileData.learning ?? []).map((item: string) => (
                     <Label size="M" liveStatus={true}>{item}</Label>
                 ))}
             </div>
@@ -183,11 +225,6 @@ const experienceTime = calculateRelevantExperience(experienceData.experience);
     .value {
         font-size: 1rem;
         color: var(--color-text);
-    }
-
-    .muted-text {
-        color: var(--color-muted);
-        font-size: 0.95rem;
     }
 
     .accent-highlight {

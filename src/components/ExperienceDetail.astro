@@ -1,29 +1,14 @@
 ---
-import experienceData from "@/data/about/experience.json";
+import { getPortfolioData, type Position } from "@/lib/portfolio-cache";
 import Heading from "@/components/ui/Heading.astro";
 import Label from "@/components/ui/Label.astro";
 
-interface Position {
-    grade?: string;
-    title: string;
-    company: string;
-    description?: string;
-    location_city?: string;
-    location_country?: string;
-    location_type?: string;
-    employment_type?: string;
-    start: string;
-    end: string;
-    projects?: string[];
-    certifications?: string[];
-    skills?: string[];
-}
+// 1. Fetch data from in-memory cache (bypasses redundant DB queries)
+const { experience: rawPositions } = await getPortfolioData();
 
-const rawPositions: Position[] = ((experienceData as any).positions || (experienceData as any).experience || []) as Position[];
-
-// Group positions by company
+// 2. Group positions by company name
 const companyMap = new Map<string, Position[]>();
-rawPositions.forEach((pos) => {
+rawPositions.forEach((pos: Position) => {
     const existing = companyMap.get(pos.company) || [];
     existing.push(pos);
     companyMap.set(pos.company, existing);
@@ -36,16 +21,20 @@ interface CompanyGroupData {
 }
 
 const rawCompanyGroups: CompanyGroupData[] = Array.from(companyMap.entries()).map(([companyName, posList]) => {
-    // Sort reverse chronological within company (newest first)
-    const sorted = [...posList].sort((a, b) => {
-        const aStart = new Date(a.start).getTime();
-        const bStart = new Date(b.start).getTime();
+    // Sort reverse-chronological within company (newest first)
+    const sorted = [...posList].sort((a: Position, b: Position) => {
+        const aStart = new Date(a.start || 0).getTime();
+        const bStart = new Date(b.start || 0).getTime();
         return bStart - aStart;
     });
 
-    const hasCurrent = sorted.some((p) => !p.end);
+    const hasCurrent = sorted.some((p: Position) => !p.end);
     const latestPos = sorted[0];
-    const latestTimestamp = hasCurrent ? Number.MAX_SAFE_INTEGER : (latestPos.end ? new Date(latestPos.end).getTime() : new Date(latestPos.start).getTime());
+
+    // Ongoing roles float to the top; otherwise sort by the latest position's end or start date
+    const latestTimestamp = hasCurrent
+        ? Number.MAX_SAFE_INTEGER
+        : (latestPos?.end ? new Date(latestPos.end).getTime() : new Date(latestPos?.start || 0).getTime());
 
     return {
         company: companyName,
@@ -57,20 +46,23 @@ const rawCompanyGroups: CompanyGroupData[] = Array.from(companyMap.entries()).ma
 // Sort companies by latest timestamp descending (newest company first)
 const sortedCompanyGroups = rawCompanyGroups.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
 
-let globalIndex = 0;
-const positionDetails: {
+interface PositionDetail {
     id: string;
     fullTitle: string;
     company: string;
-    description?: string;
+    description: string;
     projects: string[];
     certifications: string[];
     skills: string[];
     isEmpty: boolean;
-}[] = [];
+}
 
+let globalIndex = 0;
+const positionDetails: PositionDetail[] = [];
+
+// Flatten into an ordered list of position details with fallback defaults
 sortedCompanyGroups.forEach((group) => {
-    group.sortedPositions.forEach((p) => {
+    group.sortedPositions.forEach((p: Position) => {
         const id = `pos-${globalIndex++}`;
         const fullTitle = p.grade ? `${p.grade} ${p.title}` : p.title;
         const projects = p.projects || [];
@@ -99,7 +91,7 @@ sortedCompanyGroups.forEach((group) => {
     </div>
 
     <div class="details-container">
-        {positionDetails.map((pos, idx) => (
+        {positionDetails.map((pos) => (
             <div
                 class:list={["detail-pane", { "is-active": pos.id === "pos-0" }]}
                 data-detail-id={pos.id}

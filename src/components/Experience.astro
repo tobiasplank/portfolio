@@ -1,36 +1,23 @@
 ---
-import experienceData from "@/data/about/experience.json";
+import { getPortfolioData, type Position } from "@/lib/portfolio-cache";
 import Heading from "@/components/ui/Heading.astro";
 
-interface Position {
-    grade?: string;
-    title: string;
-    company: string;
-    logo?: string;
-    badge?: string;
-    description?: string;
-    location_city?: string;
-    location_country?: string;
-    location_type?: string;
-    employment_type?: string;
-    start: string;
-    end: string;
-    projects?: string[];
-    certifications?: string[];
-    skills?: string[];
-}
+// Get positions directly from the in-memory cache
+const { experience: rawPositions } = await getPortfolioData();
 
-const rawPositions: Position[] = ((experienceData as any).positions || (experienceData as any).experience || []) as Position[];
-
-function formatMonthYear(dateStr: string): string {
+function formatMonthYear(dateStr?: string | null): string {
     if (!dateStr) return "Present";
     const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+    return isNaN(d.getTime())
+        ? "Present"
+        : d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
 }
 
-function calculateDuration(startStr: string, endStr: string): string {
+function calculateDuration(startStr?: string | null, endStr?: string | null): string {
+    if (!startStr) return "";
     const start = new Date(startStr);
     const end = endStr ? new Date(endStr) : new Date();
+
     let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
     if (end.getDate() >= start.getDate() - 5) {
         months += 1;
@@ -46,7 +33,6 @@ function calculateDuration(startStr: string, endStr: string): string {
     return parts.join(" ") || "1 mo";
 }
 
-// Group positions by company
 interface CompanyGroup {
     company: string;
     logo?: string;
@@ -64,7 +50,7 @@ interface CompanyGroup {
 }
 
 const companyMap = new Map<string, Position[]>();
-rawPositions.forEach((pos) => {
+rawPositions.forEach((pos: Position) => {
     const existing = companyMap.get(pos.company) || [];
     existing.push(pos);
     companyMap.set(pos.company, existing);
@@ -72,29 +58,37 @@ rawPositions.forEach((pos) => {
 
 let globalIndex = 0;
 const rawCompanies: CompanyGroup[] = Array.from(companyMap.entries()).map(([companyName, posList]) => {
-    // Sort reverse chronological within company (newest first)
-    const sorted = [...posList].sort((a, b) => {
-        const aStart = new Date(a.start).getTime();
-        const bStart = new Date(b.start).getTime();
+    const sorted = [...posList].sort((a: Position, b: Position) => {
+        const aStart = new Date(a.start || 0).getTime();
+        const bStart = new Date(b.start || 0).getTime();
         return bStart - aStart;
     });
 
-    const earliestStart = sorted.reduce((min, p) => (new Date(p.start) < new Date(min) ? p.start : min), sorted[0].start);
-    const hasCurrent = sorted.some((p) => !p.end);
-    const latestEnd = hasCurrent ? "" : sorted.reduce((max, p) => (new Date(p.end) > new Date(max) ? p.end : max), sorted[0].end);
+    const earliestStart = sorted.reduce(
+        (min: string, p: Position) => (new Date(p.start || 0) < new Date(min) ? (p.start || min) : min),
+        sorted[0]?.start || ""
+    );
+
+    const hasCurrent = sorted.some((p: Position) => !p.end);
+    const latestEnd = hasCurrent
+        ? null
+        : sorted.reduce((max: string | null | undefined, p: Position) => (new Date(p.end || 0) > new Date(max || 0) ? p.end : max), sorted[0]?.end);
 
     const latestPos = sorted[0];
-    const locParts = [latestPos.location_city, latestPos.location_country].filter(Boolean).join(", ");
-    const latestTimestamp = hasCurrent ? Number.MAX_SAFE_INTEGER : (latestPos.end ? new Date(latestPos.end).getTime() : new Date(latestPos.start).getTime());
+    const locParts = [latestPos?.location_city, latestPos?.location_country].filter(Boolean).join(", ");
+
+    const latestTimestamp = hasCurrent
+        ? Number.MAX_SAFE_INTEGER
+        : (latestPos?.end ? new Date(latestPos.end).getTime() : new Date(latestPos?.start || 0).getTime());
 
     return {
         company: companyName,
-        logo: latestPos.logo || latestPos.badge || "",
+        logo: latestPos?.logo || latestPos?.badge || "",
         totalDuration: calculateDuration(earliestStart, latestEnd),
         latestLocation: locParts,
-        latestLocationType: latestPos.location_type || "",
+        latestLocationType: latestPos?.location_type || "",
         latestTimestamp,
-        positions: sorted.map((p) => {
+        positions: sorted.map((p: Position) => {
             const id = `pos-${globalIndex++}`;
             const fullTitle = p.grade ? `${p.grade} ${p.title}` : p.title;
             const startFmt = formatMonthYear(p.start);
@@ -112,7 +106,6 @@ const rawCompanies: CompanyGroup[] = Array.from(companyMap.entries()).map(([comp
     };
 });
 
-// Sort companies by latest timestamp descending (newest company first)
 const companies = rawCompanies.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
 ---
 
@@ -153,7 +146,7 @@ const companies = rawCompanies.sort((a, b) => b.latestTimestamp - a.latestTimest
                 </div>
 
                 <div class="timeline">
-                    {comp.positions.map((pos, idx) => (
+                    {comp.positions.map((pos) => (
                         <div
                             class:list={["timeline-item", { "is-active": pos.id === "pos-0" }]}
                             data-position-id={pos.id}

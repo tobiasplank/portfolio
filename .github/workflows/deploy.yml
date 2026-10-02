@@ -60,7 +60,17 @@ jobs:
 
           incus remote add production "https://${INCUS_HOST}:8443" --accept-certificate --auth-type tls
 
-      # 6. Atomic Deploy into LXC Container
+      # 6. Ensure shared dir + .env exists
+      - name: Ensure shared dir + .env exists
+        run: |
+          incus exec production:astro-prod -- mkdir -p /var/www/astro/shared
+      
+          echo "${{ secrets.ASTRO_ENV }}" > /tmp/astro.env
+          incus file push /tmp/astro.env production:astro-prod/var/www/astro/shared/.env --mode=0640
+          rm -f /tmp/astro.env
+
+
+      # 7. Atomic Deploy into LXC Container
       - name: Atomic Deploy into LXC Container
         run: |
           RELEASE_ID=$(date +%Y%m%d%H%M%S)
@@ -74,6 +84,7 @@ jobs:
 
           echo "🔄 Switching Symlink Atomically..."
           incus exec production:astro-prod -- sh -c "
+            ln -snf /var/www/astro/shared/.env '$RELEASE_DIR/.env' && \
             ln -sfn $RELEASE_DIR /var/www/astro/current_tmp && \
             mv -Tf /var/www/astro/current_tmp /var/www/astro/current
           "

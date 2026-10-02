@@ -1,3 +1,9 @@
+# secrets
+*.env
+*.key
+*.crt
+env_vars/
+
 # folders
 .astro/
 .idea/
@@ -12,10 +18,8 @@ yarn-error.log*
 pnpm-debug.log*
 
 # file types
-*.env
 *.env.production
 *.xml
-*.mjs
 
 # macOS-specific files
 .DS_Store
