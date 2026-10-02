@@ -34,6 +34,10 @@ jobs:
           pnpm exec pixelarticons upgrade --key="$PIXELARTICONS_KEY"
           pnpm build
 
+          pnpm --filter=. deploy --prod ./bundle
+          cp -r dist ./bundle/dist
+          tar -czf release.tar.gz -C ./bundle .
+
       # 4. Join Tailscale Mesh
       - name: Connect to Tailscale
         uses: tailscale/github-action@v2
@@ -79,16 +83,19 @@ jobs:
           echo "🚀 Creating Release: $RELEASE_DIR"
           incus exec production:astro-prod -- mkdir -p "$RELEASE_DIR"
 
-          echo "📦 Pushing Artifacts to Container..."
-          incus file push -r dist/* "production:astro-prod$RELEASE_DIR/"
+          echo "📦 Pushing single Tarball to Container..."
+          # Nur 1 Datei übertragen (dauert 1-2 Sekunden!):
+          incus file push release.tar.gz "production:astro-prod/tmp/release-$RELEASE_ID.tar.gz"
 
-          echo "🔄 Switching Symlink Atomically..."
+          echo "📂 Extracting and Switching Symlink..."
           incus exec production:astro-prod -- sh -c "
+            tar -xzf /tmp/release-$RELEASE_ID.tar.gz -C '$RELEASE_DIR' && \
+            rm -f /tmp/release-$RELEASE_ID.tar.gz && \
             ln -snf /var/www/astro/shared/.env '$RELEASE_DIR/.env' && \
-            ln -sfn $RELEASE_DIR /var/www/astro/current_tmp && \
+            ln -sfn '$RELEASE_DIR' /var/www/astro/current_tmp && \
             mv -Tf /var/www/astro/current_tmp /var/www/astro/current
           "
-          
+
           echo "🔄 Restarting Astro SSR Service..."
           incus exec production:astro-prod -- systemctl restart astro
 

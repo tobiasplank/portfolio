@@ -1,44 +1,49 @@
 // /src/lib/mongodb.ts
 import { MongoClient, type Db } from "mongodb";
 
-const host = import.meta.env.MONGODB_HOST;
-const username = import.meta.env.MONGODB_USER;
-const password = import.meta.env.MONGODB_PASSWORD;
-const databaseName = import.meta.env.MONGODB_DB;
-const authSource = import.meta.env.MONGODB_AUTH_SOURCE;
+// Type-safe helper to access environment variables from either Astro or Node runtime
+function getEnv(key: string): string | undefined {
+    const metaEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
+    const processEnv = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } }).process?.env;
+    return metaEnv?.[key] ?? processEnv?.[key];
+}
 
-if (!host || !username || !password) {
+const host = getEnv("MONGODB_HOST");
+const username = getEnv("MONGODB_USER");
+const password = getEnv("MONGODB_PASSWORD");
+const databaseName = getEnv("MONGODB_DB") || "";
+const authSource = getEnv("MONGODB_AUTH_SOURCE");
+
+if (!host || !username || !password || !databaseName) {
     throw new Error(
-        "MONGODB_HOST, MONGODB_USER or MONGODB_PASSWORD isn't set."
+        `MONGODB_HOST, MONGODB_USER, MONGODB_PASSWORD or MONGODB_DB isn't set.`
     );
 }
 
-const queryParams: Record<string, string> = {
-    serverSelectionTimeoutMS: "7000",
-    directConnection: "true", // Erzwingt die direkte IP-Verbindung
-};
+// Build query parameters safely without undefined values
+const queryParams = new URLSearchParams();
+queryParams.set("serverSelectionTimeoutMS", "7000");
+queryParams.set("directConnection", "true");
 
 if (authSource) {
-    queryParams.authSource = authSource;
+    queryParams.set("authSource", authSource);
 }
-
-const query = new URLSearchParams(queryParams);
 
 const uri =
     `mongodb://${encodeURIComponent(username)}:` +
     `${encodeURIComponent(password)}@${host}/` +
-    `${encodeURIComponent(databaseName)}?${query.toString()}`;
+    `${encodeURIComponent(databaseName)}?${queryParams.toString()}`;
 
-const debugUri = uri.replace(/:([^:@]+)@/, ":****@");
-console.log("Connecting to MongoDB with URI:", debugUri);
-
-declare global {
-    var _mongoClientPromise: Promise<MongoClient> | undefined;
+// Interface for globalThis cache to avoid WebStorm 'var' warnings
+interface MongoGlobal {
+    _mongoClientPromise?: Promise<MongoClient>;
 }
 
-const clientPromise =
-    globalThis._mongoClientPromise ??
-    (globalThis._mongoClientPromise = new MongoClient(uri).connect());
+const globalStore = globalThis as unknown as MongoGlobal;
+
+const clientPromise: Promise<MongoClient> =
+    globalStore._mongoClientPromise ??
+    (globalStore._mongoClientPromise = new MongoClient(uri).connect());
 
 export async function getDb(): Promise<Db> {
     const client = await clientPromise;
