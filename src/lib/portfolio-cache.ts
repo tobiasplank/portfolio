@@ -33,9 +33,21 @@ export interface Position {
     skills?: string[];
 }
 
+export interface Contact {
+    address?: string;
+    phone?: string;
+    mail?: string;
+    vcall?: string;
+    linkedin?: string;
+    github?: string;
+    discord?: string;
+    mastodon?: string;
+}
+
 export interface PortfolioData {
     profile: Profile | null;
     experience: Position[];
+    contact: Contact | null;
 }
 
 const CACHE_TTL_MS = 5_000;
@@ -68,18 +80,20 @@ export async function getPortfolioData(): Promise<PortfolioData> {
             const db = await getDb();
 
             // ACHTUNG: Prüfe, ob deine Collection "profile" oder "profiles" heißt!
-            const [profile, experience] = await Promise.all([
+            const [profile, experience, contact] = await Promise.all([
                 db.collection<Profile>("profile").findOne({}),
                 db
-                    .collection<Position>("experiences")
+                    .collection<Position>("experience")
                     .find({})
                     .sort({ start: -1 })
                     .toArray(),
+                db.collection<Contact>("contact").findOne({}),
             ]);
 
             const data: PortfolioData = {
                 profile,
                 experience,
+                contact,
             };
 
             cache.data = data;

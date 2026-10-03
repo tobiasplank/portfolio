@@ -4,6 +4,14 @@ import Hero from "@/components/Hero.astro";
 import Grid from "@/ui/Grid.astro";
 import Heading from "@/ui/Heading.astro";
 import "@/styles/legal.css";
+import { getPortfolioData } from "@/lib/portfolio-cache";
+
+export const prerender = false;
+
+const { profile, contact } = await getPortfolioData();
+const fullName = [profile?.first_name, profile?.last_name]
+    .filter(Boolean)
+    .join(" ");
 ---
 
 <Layout title="Privacy Policy">
@@ -23,10 +31,10 @@ import "@/styles/legal.css";
                 General information
             </Heading>
             <p>
-                The following information will provide you with an easy to navigate overview of what will happen with
-                your personal data when you visit this website. The term “personal data” comprises all data that can be
-                used to personally identify you. For detailed information about the subject matter of data protection,
-                please consult our Data Protection Declaration, which we have included beneath this copy.
+                This section gives you a quick overview of what happens to your personal data when you visit my
+                portfolio website. “Personal data” means information that can identify you, either directly or when
+                combined with other information. You’ll find more details about how I handle that information and how
+                you can contact me in the sections below.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
@@ -37,78 +45,68 @@ import "@/styles/legal.css";
                 Who is the responsible party for the recording of data on this website (i.e., the “controller”)?
             </Heading>
             <p>
-                The data on this website is processed by the operator of the website, whose contact information is
-                available under section “Information about the responsible party (referred to as the “controller” in
-                the GDPR)” in this Privacy Policy.
+                I’m responsible for handling personal data collected through this website. In data protection law, this
+                is called being the “controller.” You can find my contact details in the section “Who is responsible
+                for this website?”
             </p>
 
             <Heading tagName="h4" tagSize="h4">
-                How do we record your data?
+                How do I record your data?
             </Heading>
             <p>
-                We collect your data as a result of your sharing of your data with us. This may, for instance be
-                information you enter into our contact form.<br><br>
+                I receive personal data when you choose to share it with me. This may, for instance be
+                information you enter by submitting a recommendation about me or filling other forms.<br><br>
 
-                Other data shall be recorded by our IT systems automatically or after you consent to its recording
-                during your website visit. This data comprises primarily technical information (e.g., web browser,
-                operating system, or time the site was accessed). This information is recorded automatically when you
-                access this website.
+                Some technical information, such as your browser, operating system, or the time you visit the site, may
+                also be recorded automatically by the systems that run this website. This happens when you access the
+                site.
             </p>
 
             <Heading tagName="h4" tagSize="h4">
-                What are the purposes we use your data for?
+                What are the purposes I use your data for?
             </Heading>
             <p>
-                A portion of the information is generated to guarantee the error free provision of the website. Other
-                data may be used to analyze your user patterns. If contracts can be concluded or initiated via the
-                website, the transmitted data will also be processed for contract offers, orders or other order
-                enquiries.
+                I use technical information to keep my portfolio website running properly and to troubleshoot problems.
+                If you submit a recommendation about me, I use the information you provide to review it and, where
+                appropriate, include it in my portfolio.
             </p>
 
             <Heading tagName="h4" tagSize="h4">
-                What rights do you have as far as your information is concerned?
+                What rights do you have over your personal data?
             </Heading>
             <p>
-                You have the right to receive information about the source, recipients, and purposes of your archived
-                personal data at any time without having to pay a fee for such disclosures. You also have the right to
-                demand that your data are rectified or eradicated. If you have consented to data processing, you have
-                the option to revoke this consent at any time, which shall affect all future data processing. Moreover,
-                you have the right to demand that the processing of your data be restricted under certain circumstances.
-                Furthermore, you have the right to log a complaint with the competent supervising agency.<br><br>
+                You have the right to ask me what personal data I hold about you, where it came from, whether it has
+                been shared and with whom, and why I use it. You can also ask me to correct inaccurate information or,
+                in certain circumstances, delete it or restrict how I use it.<br><br>
 
-                Please do not hesitate to contact us at any time if you have questions about this or any other data
-                protection related issues.
+                If I rely on your consent to use your data, you can withdraw that consent at any time. This won’t
+                affect any use of your data that took place before you withdrew it. Depending on the circumstances, you
+                may also have the right to object to certain uses of your data or ask for a copy of it in a portable
+                format.<br><br>
+
+                You can also lodge a complaint with your local data protection supervisory authority. If you have a
+                question or want to exercise one of these rights, please contact me using the details in this policy.
             </p>
 
 
             <Heading tagName="h2" tagSize="h2" animated={true}>
-                2. Hosting and Content Delivery Networks (CDN)
+                2. External Hosting of my website
             </Heading>
             <p>
-                We are hosting the content of our website at the following provider:
-            </p>
+                I host this website with netcup GmbH. To make the website available and keep it secure, the hosting
+                provider may process technical information about visits, such as IP addresses, the pages requested,
+                access times, browser details, and error logs. If you submit a recommendation through a form on this
+                website, the information you enter may also be processed by the hosting provider.<br><br>
 
-            <Heading tagName="h3" tagSize="h3">
-                External Hosting
-            </Heading>
-            <p>
-                This website is hosted externally. Personal data collected on this website are stored on the servers of
-                the host. These may include, but are not limited to, IP addresses, contact requests, metadata and
-                communications, contract information, contact information, names, web page access, and other data
-                generated through a web site.<br><br>
+                I use this hosting service to make my portfolio available online and to ensure that it runs reliably
+                and securely. Where applicable, this processing is based on my legitimate interests under Art. 6(1)(f)
+                GDPR. In plain terms, this means I have a legitimate need to operate and protect my website, while
+                respecting your privacy.<br><br>
 
-                The external hosting serves the purpose of fulfilling the contract with our potential and existing
-                customers (Art. 6(1)(b) GDPR) and in the interest of secure, fast, and efficient provision of our
-                online services by a professional provider (Art. 6(1)(f) GDPR). If appropriate consent has been
-                obtained, the processing is carried out exclusively on the basis of Art. 6 (1)(a) GDPR and § 25 (1)
-                TDDDG, insofar the consent includes the storage of cookies or the access to information in the user's
-                end device (e.g., device fingerprinting) within the meaning of the TDDDG. This consent can be revoked
-                at any time.<br><br>
+                My hosting provider processes personal data only as needed to provide the hosting service and in
+                accordance with my instructions.<br><br>
 
-                Our host(s) will only process your data to the extent necessary to fulfil its performance obligations
-                and to follow our instructions with respect to such data.<br><br>
-
-                We are using the following host:<br><br>
+                Hosting provider:<br><br>
 
                 netcup GmbH<br>
                 Emmy-Noether-Straße 10<br>
@@ -116,30 +114,34 @@ import "@/styles/legal.css";
             </p>
 
             <Heading tagName="h4" tagSize="h4">
-                Data processing
+                My agreement with the hosting provider
             </Heading>
             <p>
-                We have concluded a data processing agreement (DPA) for the use of the above-mentioned service. This is
-                a contract mandated by data privacy laws that guarantees that they process personal data of our website
-                visitors only based on our instructions and in compliance with the GDPR.
+                I have a data processing agreement (DPA) with netcup for hosting this website. A DPA is a contract
+                required by data protection law. It sets out that netcup processes personal data on my behalf, follows
+                my documented instructions, and handles the data in line with the GDPR.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Cloudflare
+                Website security and delivery (Cloudflare)
             </Heading>
             <p>
-                We use the “Cloudflare” service provided by Cloudflare Inc., 101 Townsend St., San Francisco, CA 94107,
-                USA. (hereinafter referred to as “Cloudflare”).<br><br>
+                I use Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA (after referred to as
+                “Cloudflare”), to provide DNS and content delivery services and to help protect my portfolio website.
+                <br><br>
 
-                Cloudflare offers a content delivery network with DNS that is available worldwide. As a result, the
-                information transfer that occurs between your browser and our website is technically routed via
-                Cloudflare’s network. This enables Cloudflare to analyze data transactions between your browser and our
-                website and to work as a filter between our servers and potentially malicious data traffic from the
-                Internet. In this context, Cloudflare may also use cookies or other technologies deployed to recognize
-                Internet users, which shall, however, only be used for the herein described purpose.<br><br>
+                My website is proxied through Cloudflare, so requests from your browser pass through Cloudflare’s
+                network before reaching my server. Cloudflare may process technical information such as your IP address,
+                browser and device details, the pages or files you request, and information about network traffic. This
+                allows Cloudflare to deliver website content and act as a filter between your browser and my server,
+                helping to identify and block malicious or unwanted traffic.<br><br>
 
-                The use of Cloudflare is based on our legitimate interest in a provision of our website offerings that
-                is as error free and secure as possible (Art. 6(1)(f) GDPR).<br><br>
+                Depending on the security features in use, Cloudflare may also use cookies or similar technologies to
+                help distinguish legitimate visitors from automated or potentially harmful traffic.<br><br>
+
+                I use Cloudflare to help keep my website available, reliable, and secure. This is based on my
+                legitimate interest under Art. 6(1)(f) GDPR. In simple terms, I have a legitimate reason to operate and
+                protect my website while respecting your privacy.<br><br>
 
                 Data transmission to the US is based on the Standard Contractual Clauses (SCC) of the European
                 Commission. Details and further information on security and data protection at Cloudflare can be found
@@ -158,210 +160,206 @@ import "@/styles/legal.css";
                 </a>.
             </p>
 
-            <Heading tagName="h4" tagSize="h4">
-                Data processing
-            </Heading>
-            <p>
-                We have concluded a data processing agreement (DPA) for the use of the above-mentioned service. This is
-                a contract mandated by data privacy laws that guarantees that they process personal data of our website
-                visitors only based on our instructions and in compliance with the GDPR.
-            </p>
-
 
             <Heading tagName="h2" tagSize="h2" animated={true}>
                 3. General information and mandatory information
             </Heading>
             <Heading tagName="h3" tagSize="h3">
-                Data protection
+                How I handle and protect your personal data
             </Heading>
             <p>
-                The operators of this website and its pages take the protection of your personal data very seriously.
-                Hence, we handle your personal data as confidential information and in compliance with the statutory
-                data protection regulations and this Data Protection Declaration.<br><br>
+                I take the privacy of visitors to my portfolio website seriously. I handle personal data in line with
+                applicable data protection laws and the information in this policy.<br><br>
 
-                Whenever you use this website, a variety of personal information will be collected. Personal data
-                comprises data that can be used to personally identify you. This Data Protection Declaration explains
-                which data we collect as well as the purposes we use this data for. It also explains how, and for which
-                purpose the information is collected.<br><br>
+                When you visit my website, some technical information may be processed so the site can be delivered and
+                kept secure. If you choose to send me information — for example, by submitting a recommendation about me
+                for my portfolio — I use it as described in this policy.<br><br>
 
-                We herewith advise you that the transmission of data via the Internet (i.e., through e-mail
-                communications) may be prone to security gaps. It is not possible to completely protect data against
-                third-party access.
+                Please keep in mind that sending information over the internet, including by email, can involve
+                security risks. Although I take reasonable steps to protect personal data, no method of transmission or
+                storage can be guaranteed to be completely secure.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Information about the responsible party (referred to as the “controller” in the GDPR)
+                Who is responsible for this website?
+            </Heading>
+            <div class="legal-section">
+                <p>
+                    I’m the person responsible for handling personal data on this website. In data protection law, this
+                    role is called the “controller.”<br>
+                </p>
+
+                <p>Contact details:<br></p>
+
+                <div class="contact-block">
+                    <p>{fullName}</p>
+                    <address>{contact.address}</address>
+                </div>
+
+                <p>
+                    Phone: <a href={`tel:${contact.phone}`}>{contact.phone}</a><br/>
+                    E-mail: <a href={`mailto:${contact.mail}`}>{contact.mail}</a>
+                </p>
+
+                <p>
+                    The controller is the person or organisation that decides why and how personal data is processed
+                    (for example, names or email addresses). In this case, that’s me.<br/><br/>
+
+                    I may not always be able to answer the phone right away. If your number is visible, I’ll do
+                    my best to call you back. If you’ve withheld your caller ID, I won’t be able to return your call.
+                </p>
+            </div>
+
+            <Heading tagName="h3" tagSize="h3">
+                How long I keep your information
             </Heading>
             <p>
-                The data processing controller on this website is:<br><br>
+                I keep personal data only for as long as it is needed for the purpose it was collected for, unless this
+                policy explains a different retention period.<br><br>
 
-                Tobias Plank<br>
-                c/o COCENTER<br>
-                Koppoldstr. 1<br>
-                86551 Aichach<br><br>
+                I keep recommendations for my portfolio while they remain relevant and reasonably up to date. If a
+                recommendation is replaced, becomes outdated, or I have reason to believe it no longer reflects the
+                person’s views or our professional/personal relationship, I’ll remove it or stop displaying it. If I
+                can no longer stay in contact with the person who provided it and can’t reasonably confirm that it is
+                still valid, I may also remove it.<br><br>
 
-                Phone: <a href="tel:+4915168495502">+49 1516 8495502</a><br>
-                E-mail: <a href="mailto:info@tobias-plank.de">info@tobias-plank.de</a><br><br>
-
-                The controller is the natural person or legal entity that single-handedly or jointly with others makes
-                decisions as to the purposes of and resources for the processing of personal data (e.g., names, e-mail
-                addresses, etc.).
+                I may need to keep some information for longer where the law requires it
+                or permits it, for example to meet legal record-keeping obligations.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Storage duration
+                Why I’m allowed to use personal data (legal basis)
             </Heading>
             <p>
-                Unless a more specific storage period has been specified in this privacy policy, your personal data
-                will remain with us until the purpose for which it was collected no longer applies. If you assert a
-                justified request for deletion or revoke your consent to data processing, your data will be deleted,
-                unless we have other legally permissible reasons for storing your personal data (e.g., tax or
-                commercial law retention periods); in the latter case, the deletion will take place after these reasons
-                cease to apply.
+                The legal basis for using personal data depends on what I’m using it for. For example, when someone
+                submits a recommendation and agrees that I may display it in my portfolio, I may rely on their consent
+                under Art. 6(1)(a) GDPR. They can withdraw that consent at any time; I’ll then stop displaying or
+                delete the recommendation.<br><br>
+
+                I may rely on my legitimate interests under Art. 6(1)(f) GDPR to operate, maintain, and protect my
+                website (for example, when processing technical information needed to keep it secure). This means I
+                have a legitimate reason for that processing, while still taking your rights and privacy into account.
+                <br><br>
+
+                In some cases, I may need to process personal data to meet a legal obligation under Art. 6(1)(c) GDPR.
+                If a different legal basis applies to a particular use of your data, I’ll explain it in the relevant
+                section of this policy.<br><br>
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                General information on the legal basis for the data processing on this website
+                Who may process your personal data?
             </Heading>
             <p>
-                If you have consented to data processing, we process your personal data on the basis of Art. 6(1)(a)
-                GDPR or Art. 9 (2)(a) GDPR, if special categories of data are processed according to Art. 9 (1) DSGVO.
-                In the case of explicit consent to the transfer of personal data to third countries, the data
-                processing is also based on Art. 49 (1)(a) GDPR. If you have consented to the storage of cookies or to
-                the access to information in your end device (e.g., via device fingerprinting), the data processing is
-                additionally based on § 25 (1) TDDDG. The consent can be revoked at any time. If your data is required
-                for the fulfillment of a contract or for the implementation of pre-contractual measures, we process
-                your data on the basis of Art. 6(1)(b) GDPR. Furthermore, if your data is required for the fulfillment
-                of a legal obligation, we process it on the basis of Art. 6(1)(c) GDPR. Furthermore, the data
-                processing may be carried out on the basis of our legitimate interest according to Art. 6(1)(f) GDPR.
-                Information on the relevant legal basis in each individual case is provided in the following paragraphs
-                of this privacy policy.
+                I use netcup to host my portfolio website and Cloudflare to help deliver and protect it. When you visit
+                the website, these providers may process technical information such as your IP address and details of
+                your request as needed to provide their services.<br><br>
+
+                I have a data processing agreement with netcup. Any personal data processed by netcup on my behalf is
+                handled under that agreement and in line with my instructions. Cloudflare processes information as part
+                of the services it provides for my website; you can find more details about this in the Cloudflare
+                section of this policy.<br><br>
+
+                I don’t share personal data with any other organisations for any marketing purposes. I only disclose
+                it if I’m legally required to do so.<br><br>
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Recipients of personal data
+                Withdrawing your consent
             </Heading>
             <p>
-                In the scope of our business activities, we cooperate with various external parties. In some cases,
-                this also requires the transfer of personal data to these external parties. We only disclose personal
-                data to external parties if this is required as part of the fulfillment of a contract, if we are
-                legally obligated to do so (e.g., disclosure of data to tax authorities), if we have a legitimate
-                interest in the disclosure pursuant to Art. 6 (1)(f) GDPR, or if another legal basis permits the
-                disclosure of this data. When using processors, we only disclose personal data of our customers on the
-                basis of a valid contract on data processing. In the case of joint processing, a joint processing
-                agreement is concluded.
+                If I use your personal data based on your consent, you can withdraw that consent at any time by
+                contacting me. For example, if you withdraw your consent to have a recommendation displayed in my
+                portfolio, I’ll remove it from the website. Withdrawing your consent won’t undo what I did with your
+                personal data while you had given permission for me to use it. Once you withdraw your consent, I’ll
+                stop displaying it in my portfolio. I’ll also delete the information if I no longer need to keep it for
+                another lawful reason.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Revocation of your consent to the processing of data
+                Your right to object to certain uses of your data (Art. 21 GDPR)
             </Heading>
+
             <p>
-                A wide range of data processing transactions are possible only subject to your express consent. You can
-                also revoke at any time any consent you have already given us. This shall be without prejudice to the
-                lawfulness of any data collection that occurred prior to your revocation.
+                IF I PROCESS YOUR PERSONAL DATA BASED ON MY LEGITIMATE INTERESTS UNDER ART. 6(1)(F) GDPR, YOU CAN
+                OBJECT AT ANY TIME FOR REASONS RELATED TO YOUR PARTICULAR SITUATION. I WILL THEN STOP PROCESSING YOUR
+                DATA UNLESS I CAN SHOW COMPELLING LEGITIMATE GROUNDS THAT OVERRIDE YOUR INTERESTS, RIGHTS AND FREEDOMS,
+                OR I NEED THE DATA TO ESTABLISH, EXERCISE OR DEFEND LEGAL CLAIMS.<br><br>
+
+                IF YOU HAVE A QUESTION OR WANT TO OBJECT, PLEASE CONTACT ME USING THE CONTACT DETAILS IN THIS POLICY.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Right to object to the collection of data in special cases; right to object to direct advertising (Art.
-                21 GDPR)
+                Your right to contact a data protection authority
             </Heading>
-
             <p>
-                IN THE EVENT THAT DATA ARE PROCESSED ON THE BASIS OF ART. 6(1)(E) OR (F) GDPR, YOU HAVE THE RIGHT TO AT
-                ANY TIME OBJECT TO THE PROCESSING OF YOUR PERSONAL DATA BASED ON GROUNDS ARISING FROM YOUR UNIQUE
-                SITUATION. THIS ALSO APPLIES TO ANY PROFILING BASED ON THESE PROVISIONS. TO DETERMINE THE LEGAL BASIS,
-                ON WHICH ANY PROCESSING OF DATA IS BASED, PLEASE CONSULT THIS DATA PROTECTION DECLARATION. IF YOU LOG
-                AN OBJECTION, WE WILL NO LONGER PROCESS YOUR AFFECTED PERSONAL DATA, UNLESS WE ARE IN A POSITION TO
-                PRESENT COMPELLING PROTECTION WORTHY GROUNDS FOR THE PROCESSING OF YOUR DATA, THAT OUTWEIGH YOUR
-                INTERESTS, RIGHTS AND FREEDOMS OR IF THE PURPOSE OF THE PROCESSING IS THE CLAIMING, EXERCISING OR
-                DEFENCE OF LEGAL ENTITLEMENTS (OBJECTION PURSUANT TO ART. 21(1) GDPR).<br><br>
-
-                IF YOUR PERSONAL DATA IS BEING PROCESSED IN ORDER TO ENGAGE IN DIRECT ADVERTISING, YOU HAVE THE RIGHT
-                TO OBJECT TO THE PROCESSING OF YOUR AFFECTED PERSONAL DATA FOR THE PURPOSES OF SUCH ADVERTISING AT ANY
-                TIME. THIS ALSO APPLIES TO PROFILING TO THE EXTENT THAT IT IS AFFILIATED WITH SUCH DIRECT ADVERTISING.
-                IF YOU OBJECT, YOUR PERSONAL DATA WILL SUBSEQUENTLY NO LONGER BE USED FOR DIRECT ADVERTISING PURPOSES
-                (OBJECTION PURSUANT TO ART. 21(2) GDPR).
+                If you believe that I have handled your personal data in a way that violates data protection law, you
+                have the right to lodge a complaint with a data protection supervisory authority. You can usually
+                contact the authority where you live or work, or where you believe the issue took place. You can do
+                this even if you also choose to pursue other legal remedies.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Right to log a complaint with the competent supervisory agency
+                Your right to receive or transfer your data
             </Heading>
             <p>
-                In the event of violations of the GDPR, data subjects are entitled to log a complaint with a
-                supervisory agency, in particular in the member state where they usually maintain their domicile, place
-                of work or at the place where the alleged violation occurred. The right to log a complaint is in effect
-                regardless of any other administrative or court proceedings available as legal recourses.
+                Where the right to data portability applies, you can ask me to provide personal data you have given me
+                in a commonly used, machine-readable format. This right applies when I process the data automatically
+                based on your consent or a contract with you. Where technically feasible, you can also ask me to send
+                the data directly to another controller.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Right to data portability
+                Your right to access, correct, or delete your data
             </Heading>
             <p>
-                You have the right to have data that we process automatically on the basis of your consent or in
-                fulfillment of a contract handed over to you or to a third party in a common, machine-readable format.
-                If you should demand the direct transfer of the data to another controller, this will be done only if
-                it is technically feasible.
+                You can ask me whether I hold personal data about you and, where the law gives you this right, request
+                a copy. You can also ask where the data came from, who it has been shared with, and why I use it. If
+                any information is inaccurate, you can ask me to correct it. In certain circumstances, you can also ask
+                me to delete it. If you have a question or would like to make a request, please contact me using the
+                details in this policy.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                Information about, rectification and eradication of data
+                Your right to restrict how I use your data
             </Heading>
             <p>
-                Within the scope of the applicable statutory provisions, you have the right to demand information about
-                your archived personal data, their source and recipients as well as the purpose of the processing of
-                your data at any time. You may also have a right to have your data rectified or eradicated. If you have
-                questions about this subject matter or any other questions about personal data, please do not hesitate
-                to contact us at any time.
-            </p>
-
-            <Heading tagName="h3" tagSize="h3">
-                Right to demand processing restrictions
-            </Heading>
-            <p>
-                You have the right to demand the imposition of restrictions as far as the processing of your personal
-                data is concerned. To do so, you may contact us at any time. The right to demand restriction of
-                processing applies in the following cases:
+                In certain situations, you can ask me to temporarily restrict the processing of your personal data.
+                This right may apply:
             </p>
             <ul>
                 <li>
-                    In the event that you should dispute the correctness of your data archived by us, we will usually
-                    need some time to verify this claim. During the time that this investigation is ongoing, you have
-                    the right to demand that we restrict the processing of your personal data.
+                    If you believe your personal data is inaccurate, while I check it.
                 </li>
                 <li>
-                    If the processing of your personal data was/is conducted in an unlawful manner, you have the option
-                    to demand the restriction of the processing of your data instead of demanding the eradication of
-                    this data.
+                    If you believe I have processed your data unlawfully and you would prefer me to restrict its use
+                    rather than delete it.
                 </li>
                 <li>
-                    If we do not need your personal data any longer and you need it to exercise, defend or claim legal
-                    entitlements, you have the right to demand the restriction of the processing of your personal data
-                    instead of its eradication.
+                    If I no longer need your data, but you need it to establish, exercise, or defend a legal claim.
                 </li>
                 <li>
-                    If you have raised an objection pursuant to Art. 21(1) GDPR, your rights and our rights will have
-                    to be weighed against each other. As long as it has not been determined whose interests prevail,
-                    you have the right to demand a restriction of the processing of your personal data.
+                    If you have objected to my processing under Art. 21(1) GDPR, while I assess whether my interests or
+                    your rights and interests take priority.
                 </li>
             </ul>
             <p>
-                If you have restricted the processing of your personal data, these data – with the exception of their
-                archiving – may be processed only subject to your consent or to claim, exercise or defend legal
-                entitlements or to protect the rights of other natural persons or legal entities or for important
-                public interest reasons cited by the European Union or a member state of the EU.
+                When processing is restricted, I will generally store your data but not otherwise use it. The law
+                allows certain exceptions, such as where you consent, where the data is needed for a legal claim, or
+                where processing is necessary to protect another person’s rights or for an important public interest.
+                If you’d like to request a restriction, please contact me using the details in this policy.
             </p>
 
             <Heading tagName="h3" tagSize="h3">
-                SSL and/or TLS encryption
+                SSL and/or TLS encryption (HTTPS)
             </Heading>
             <p>
-                For security reasons and to protect the transmission of confidential content, such as purchase orders
-                or inquiries you submit to us as the website operator, this website uses either an SSL or a TLS
-                encryption program. You can recognize an encrypted connection by checking whether the address line of
-                the browser switches from “http://” to “https://” and also by the appearance of the lock icon in the
-                browser line.<br><br>
+                This website uses HTTPS to help protect information sent between your browser and the website. You can
+                usually tell the connection is encrypted when the address starts with “https://” and your browser shows
+                a lock icon.<br><br>
 
-                If the SSL or TLS encryption is activated, data you transmit to us cannot be read by third parties.
+                Encryption helps prevent others from reading information while it is being transmitted, for example
+                when you submit a recommendation. It does not guarantee complete security or protect information once
+                it reaches the website or the service providers that process it.
             </p>
 
 
@@ -369,23 +367,17 @@ import "@/styles/legal.css";
                 4. Recording of data on this website
             </Heading>
             <Heading tagName="h3" tagSize="h3">
-                Request by e-mail or telephone
+                Contacting me by email or phone
             </Heading>
             <p>
-                If you contact us by e-mail or telephone, your request, including all resulting personal data
-                (name, request) will be stored and processed by us for the purpose of processing your request. We do
-                not pass these data on without your consent.<br><br>
+                If you contact me by email or phone, I’ll use the information you provide (such as your name, contact
+                details, and message) to respond to you. If you call and your number is visible, I may use it to call
+                you back if I’m unable to answer.<br><br>
 
-                These data are processed on the basis of Art. 6(1)(b) GDPR if your inquiry is related to the
-                fulfillment of a contract or is required for the performance of pre-contractual measures. In all other
-                cases, the data are processed on the basis of our legitimate interest in the effective handling of
-                inquiries submitted to us (Art. 6(1)(f) GDPR) or on the basis of your consent (Art. 6(1)(a) GDPR) if it
-                has been obtained; the consent can be revoked at any time.<br><br>
-
-                The data sent by you to us via contact requests remain with us until you request us to delete, revoke
-                your consent to the storage or the purpose for the data storage lapses (e.g. after completion of your
-                request). Mandatory statutory provisions - in particular statutory retention periods - remain
-                unaffected.
+                I process this information to handle your request. This is generally based on my legitimate interest in
+                responding to enquiries (Art. 6(1)(f) GDPR). I keep the information only for as long as needed to deal
+                with your enquiry, unless I’m required by law to keep it for longer. I don’t share it with others
+                unless this is necessary to handle your request or I’m legally required to do so.
             </p>
 
 
@@ -396,7 +388,7 @@ import "@/styles/legal.css";
                 Google Fonts (local embedding)
             </Heading>
             <p>
-                This website uses so-called Google Fonts provided by Google to ensure the uniform use of fonts on this
+                My website uses so-called Google Fonts provided by Google to ensure the uniform use of fonts on this
                 site. These Google fonts are locally installed so that a connection to Google’s servers will not be
                 established in conjunction with this application.<br><br>
 

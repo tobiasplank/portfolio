@@ -4,6 +4,14 @@ import Hero from "@/components/Hero.astro";
 import Grid from "@/ui/Grid.astro";
 import Heading from "@/ui/Heading.astro";
 import "@/styles/legal.css";
+import { getPortfolioData } from "@/lib/portfolio-cache";
+
+export const prerender = false;
+
+const { profile, contact } = await getPortfolioData();
+const fullName = [profile?.first_name, profile?.last_name]
+    .filter(Boolean)
+    .join(" ");
 ---
 
 <Layout title="Imprint">
@@ -18,30 +26,30 @@ import "@/styles/legal.css";
             <Heading tagName="h2" tagSize="h3">
                 Site Notice
             </Heading>
-            <p>
-                Tobias Plank<br>
-                c/o COCENTER<br>
-                Koppoldstr. 1<br>
-                86551 Aichach
-            </p>
+            <div class="contact-block">
+                <p>{fullName}</p>
+                <address>{contact.address}</address>
+            </div>
 
             <Heading tagName="h2" tagSize="h3">
                 Contact
             </Heading>
             <p>
-                Phone: <a href="tel:+4915168495502">+49 1516 8495502</a><br>
-                E-mail: <a href="mailto:info@tobias-plank.de">info@tobias-plank.de</a>
+                Phone: <a href={`tel:${contact.phone}`}>{contact.phone}</a><br>
+                E-mail: <a href={`mailto:${contact.mail}`}>{contact.mail}</a><br><br>
+
+                I may not always be able to answer the phone right away.<br>
+                If your number is visible, I’ll do my best to call you back.<br>
+                If you’ve withheld your caller ID, I won’t be able to return your call.
             </p>
 
             <Heading tagName="h2" tagSize="h3">
                 Person responsible for editorial
             </Heading>
-            <p>
-                Tobias Plank<br>
-                c/o COCENTER<br>
-                Koppoldstr. 1<br>
-                86551 Aichach
-            </p>
+            <div class="contact-block">
+                <p>{fullName}</p>
+                <address>{contact.address}</address>
+            </div>
         </div>
     </Grid>
 </Layout>
