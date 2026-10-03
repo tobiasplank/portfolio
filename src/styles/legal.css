@@ -2,7 +2,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: calc(var(--grid-cell) * 2.5);
+    gap: calc(var(--grid-cell) * 2);
     padding: calc(var(--grid-cell) * 4);
     color: var(--color-text);
     white-space: pre-line;
@@ -16,17 +16,6 @@
 
 .contact-block p,
 .contact-block address {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--color-text);
-}
-
-.contact-block address {
-    font-style: normal;
-}
-
-.legal-content p address {
     margin: 0;
     font-size: 1rem;
     line-height: 1.65;
