@@ -9,12 +9,12 @@ const { id = "polaroid-modal" } = Astro.props;
 ---
 
 <dialog id={id} class="polaroid-modal">
-    <!-- Close-Button oben rechts am Bildschirm -->
+    <!-- Close button at the top-right of the screen -->
     <button type="button" class="modal-close-btn" aria-label="Schließen">
         <img src={closeIcon} alt="Close" />
     </button>
 
-    <!-- Klick-Erkennung außerhalb: Dialog füllt Backdrop, Wrapper ist der Content -->
+    <!-- Outside-click detection: the dialog fills the backdrop, and the wrapper contains the content -->
     <div class="modal-content">
         <div class="modal-image-wrapper">
             <img id="modal-img" src="" alt="" />
@@ -49,13 +49,13 @@ const { id = "polaroid-modal" } = Astro.props;
         display: grid;
     }
 
-    /* Stark abgedunkelter Hintergrund */
+    /* Strongly dimmed background */
     .polaroid-modal::backdrop {
         background-color: rgba(0, 0, 0, 0.85);
         backdrop-filter: blur(4px);
     }
 
-    /* Close-Button fest oben rechts auf dem Viewport */
+    /* Close button fixed at the top-right of the viewport */
     .modal-close-btn {
         position: fixed;
         top: 1.5rem;
@@ -80,7 +80,7 @@ const { id = "polaroid-modal" } = Astro.props;
         -webkit-mask: var(--icon-url) center / contain no-repeat;
     }
 
-    /* Content-Bereich */
+    /* Content area */
     .modal-content {
         max-width: 90vw;
         max-height: 90vh;
@@ -141,14 +141,14 @@ const { id = "polaroid-modal" } = Astro.props;
 
         closeBtn?.addEventListener('click', closeModal);
 
-        // Klick außerhalb des Contents schließt das Modal
+        // Clicking outside the content closes the modal
         dialog.addEventListener('click', (e) => {
             if (content && !content.contains(e.target as Node)) {
                 closeModal();
             }
         });
 
-        // Event-Listener: Hört auf den Click aus dem PolaroidStack
+        // Event listener: listens for clicks from the PolaroidStack
         window.addEventListener('open-polaroid-modal', ((e: CustomEvent) => {
             const data = e.detail;
             if (!data) return;

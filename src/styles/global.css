@@ -78,7 +78,7 @@ a {
         var(--layout-max-width),
         round(
             down,
-            calc(100vw - var(--layout-gutter)),
+            calc(100% - var(--layout-gutter)),
             calc(var(--grid-cell) * 2)
         )
     );
@@ -123,7 +123,7 @@ a {
 
 @media (max-width: 40rem) {
     .site-shell {
-        width: 100%;
+        width: round(down, 100%, calc(var(--grid-cell) * 2));
     }
 
     .nav {

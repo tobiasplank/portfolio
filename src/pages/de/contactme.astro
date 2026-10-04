@@ -1,0 +1,18 @@
+---
+// Page layout.
+import Layout from "@/layouts/Layout.astro";
+
+// Page-specific content.
+import Hero from "@/components/Hero.astro";
+import ContactMe from "@/components/ContactMe.astro";
+---
+
+<Layout title="Kontaktiere mich">
+    <Hero
+        staticText="Kontaktiere mich"
+        dynamicText={false}
+        compact={true}
+        tagSize="h1"
+    />
+    <ContactMe />
+</Layout>

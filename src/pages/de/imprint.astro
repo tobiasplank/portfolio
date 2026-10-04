@@ -1,0 +1,59 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import Grid from "@/ui/Grid.astro";
+import Heading from "@/ui/Heading.astro";
+import "@/styles/legal.css";
+import { getPortfolioData } from "@/lib/server/portfolio-cache";
+
+const { profile, contact } = await getPortfolioData();
+const fullName = [profile?.first_name, profile?.last_name]
+    .filter(Boolean)
+    .join(" ");
+---
+
+<Layout title="Impressum">
+    <Hero
+            staticText="Impressum"
+            dynamicText={false}
+            compact={true}
+            tagSize="h1"
+    />
+    <Grid cols={1} rows={1}>
+        <div class="box bg-solid legal-content">
+            {contact && (
+                    <div class="contact-block">
+                        <p>{fullName}</p>
+                        {contact.address && <address>{contact.address}</address>}
+                    </div>
+            )}
+
+            <Heading tagName="h2" tagSize="h3">
+                Kontakt
+            </Heading>
+            <p>
+                Telefon: {contact?.phone && (
+                    <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+            )}<br>
+
+                E-mail: {contact?.mail && (
+                    <a href={`mailto:${contact.mail}`}>{contact.mail}</a>
+            )}<br><br>
+
+                Ich kann nicht immer sofort ans Telefon gehen.<br>
+                Wenn deine Rufnummer angezeigt wird, bemühe ich mich, dich zurückzurufen.<br>
+                Wenn du deine Rufnummer unterdrückt hast, kann ich dich nicht zurückrufen.
+            </p>
+
+            <Heading tagName="h2" tagSize="h3">
+                Redaktionell verantwortlich
+            </Heading>
+            {contact && (
+                    <div class="contact-block">
+                        <p>{fullName}</p>
+                        {contact.address && <address>{contact.address}</address>}
+                    </div>
+            )}
+        </div>
+    </Grid>
+</Layout>

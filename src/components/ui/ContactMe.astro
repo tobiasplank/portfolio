@@ -12,6 +12,11 @@ import githubIcon from "pixelarticons/svg/github-solid.svg?url";
 import discordIcon from "pixelarticons/svg/discord-solid.svg?url";
 import mastodonIcon from "pixelarticons/svg/mastodon-solid.svg?url";
 
+import { defaultLocale, type locale } from "@/lib/i18n/locales";
+import { useTranslations } from "@/lib/i18n/utils";
+const currentLocale = (Astro.currentLocale ?? defaultLocale) as locale;
+const t = useTranslations(currentLocale);
+
 const contactLinks = [
     {
         label: "Mail",
@@ -66,7 +71,7 @@ const contactLinks = [
 
 <div class="contact-me">
     <button class="contact-me__trigger" type="button">
-        <span>Contact me</span>
+        <span>{t("contact.title")}</span>
 
         <span
                 class="contact-me__chevron contact-me__chevron--down"
@@ -86,11 +91,7 @@ const contactLinks = [
             {
                 contactLinks.map((link) => (
                         <li
-                                class="contact-me__@media (max-width: 40rem) {
-    .contact-me__menu {
-        width: 12.5rem;
-    }
-}item"
+                                class="contact-me__item"
                                 style={`
                             --icon-color-dark: ${link.darkColor};
                             --icon-color-light: ${link.lightColor};

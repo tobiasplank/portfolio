@@ -1,10 +1,15 @@
 ---
-import { getPortfolioData, type Profile, type Position } from "@/lib/portfolio-cache";
+import { getPortfolioData, type Profile, type Position } from "@/lib/server/portfolio-cache";
 import Label from "@/components/ui/Label.astro";
 import Heading from "@/components/ui/Heading.astro";
+import { defaultLocale, type locale } from "@/lib/i18n/locales";
+import { useTranslations } from "@/lib/i18n/utils";
+
+const currentLocale = (Astro.currentLocale ?? defaultLocale) as locale;
+const t = useTranslations(currentLocale);
 
 // 1. Fetch cached data (handles DB queries & deduplication in the background)
-const { profile, experience } = await getPortfolioData();
+const { profile, experience } = await getPortfolioData(currentLocale);
 
 // 2. Fallback to prevent null errors
 const defaultProfile: Profile = {
@@ -51,14 +56,20 @@ function calculateAge(birthDateStr?: string | null): number {
  * Calculates total relevant work experience (excluding apprentice roles).
  */
 function calculateRelevantExperience(experienceList: Position[]): string {
-    const relevantRoles = experienceList.filter((item: Position) => item.grade !== "Apprentice");
-    if (!relevantRoles.length) return "0 years";
+    const relevantRoles = experienceList.filter(
+        (item: Position) =>
+            item.grade !== "Apprentice" &&
+            item.grade !== "Auszubildender" &&
+            item.employment_type !== "Apprenticeship" &&
+            item.employment_type !== "Ausbildung"
+    );
+    if (!relevantRoles.length) return t("duration.yearPlural", { count: 0 });
 
     const startDates = relevantRoles
         .map((r: Position) => new Date(r.start || "").getTime())
         .filter((time: number) => !isNaN(time));
 
-    if (!startDates.length) return "0 years";
+    if (!startDates.length) return t("duration.yearPlural", { count: 0 });
 
     const earliestStart = new Date(Math.min(...startDates));
     const now = new Date();
@@ -68,19 +79,19 @@ function calculateRelevantExperience(experienceList: Position[]): string {
     const months = diffMonths % 12;
 
     if (years === 0) {
-        return `${months} ${months === 1 ? "month" : "months"}`;
+        return t(months === 1 ? "duration.monthSingular" : "duration.monthPlural", { count: months });
     }
     if (months === 0) {
-        return `${years} ${years === 1 ? "year" : "years"}`;
+        return t(years === 1 ? "duration.yearSingular" : "duration.yearPlural", { count: years });
     }
-    return `${years} ${years === 1 ? "year" : "years"}, ${months} ${months === 1 ? "month" : "months"}`;
+    return `${t(years === 1 ? "duration.yearSingular" : "duration.yearPlural", { count: years })}, ${t(months === 1 ? "duration.monthSingular" : "duration.monthPlural", { count: months })}`;
 }
 
 const age = calculateAge(profileData.birthdate);
 
 const birthDateObj = new Date(profileData.birthdate || "");
 const formattedBirthdate = !isNaN(birthDateObj.getTime())
-    ? birthDateObj.toLocaleDateString("de-DE", {
+    ? birthDateObj.toLocaleDateString(currentLocale === "de" ? "de-DE" : "en-US", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric"
@@ -107,29 +118,29 @@ const experienceTime = calculateRelevantExperience(experience);
 
     <div class="profile-grid">
         <div class="profile-item">
-            <Heading tagName="h4" tagSize="h4">Country</Heading>
+            <Heading tagName="h4" tagSize="h4">{t("profile.country")}</Heading>
             <span class="value">{profileData.country}</span>
         </div>
 
         <div class="profile-item">
-            <Heading tagName="h4" tagSize="h4">Location</Heading>
+            <Heading tagName="h4" tagSize="h4">{t("profile.location")}</Heading>
             <span class="value">{profileData.location}</span>
         </div>
 
         <div class="profile-item">
-            <Heading tagName="h4" tagSize="h4">Age</Heading>
-            <span class="value">{age} years</span>
+            <Heading tagName="h4" tagSize="h4">{t("profile.age")}</Heading>
+            <span class="value">{t("profile.ageYears", { count: age })}</span>
         </div>
 
         <div class="profile-item">
-            <Heading tagName="h4" tagSize="h4">Experience</Heading>
+            <Heading tagName="h4" tagSize="h4">{t("profile.experience")}</Heading>
             <span class="value accent-highlight">{experienceTime}</span>
         </div>
     </div>
 
     <div class="profile-sections">
         <div class="section-group">
-            <Heading tagName="h4" tagSize="h4">Volunteer work</Heading>
+            <Heading tagName="h4" tagSize="h4">{t("profile.volunteerWork")}</Heading>
             <div class="tag-list">
                 {(profileData.volunteer_work ?? []).map((item: string) => (
                     <Label size="M">{item}</Label>
@@ -138,7 +149,7 @@ const experienceTime = calculateRelevantExperience(experience);
         </div>
 
         <div class="section-group">
-            <Heading tagName="h4" tagSize="h4">Hobbies</Heading>
+            <Heading tagName="h4" tagSize="h4">{t("profile.hobbies")}</Heading>
             <div class="tag-list">
                 {(profileData.hobbies ?? []).map((item: string) => (
                     <Label size="M">{item}</Label>
@@ -147,7 +158,7 @@ const experienceTime = calculateRelevantExperience(experience);
         </div>
 
         <div class="section-group">
-            <Heading tagName="h4" tagSize="h4">Currently Learning</Heading>
+            <Heading tagName="h4" tagSize="h4">{t("profile.currentlyLearning")}</Heading>
             <div class="tag-list">
                 {(profileData.learning ?? []).map((item: string) => (
                     <Label size="M" liveStatus={true}>{item}</Label>

@@ -1,0 +1,62 @@
+---
+import "@/styles/ui/language_picker.css";
+
+import languagesIcon from "pixelarticons/svg/languages.svg?url";
+import chevronRightIcon from "pixelarticons/svg/chevron-right.svg?url";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { locales, type Lang } from "@/lib/i18n/locales";
+
+const currentLocale = Astro.currentLocale as Lang;
+const currentPath =
+    Astro.url.pathname.replace(
+        new RegExp(`^/${currentLocale}(?=/|$)`),
+        "",
+    ) || "/";
+---
+
+<div class="language-picker">
+    <button
+        class="language-picker__trigger"
+        type="button"
+        aria-label="Choose language"
+    >
+        <span
+            class="language-picker__icon"
+            style={`--icon-url: url("${languagesIcon}")`}
+            aria-hidden="true"
+        ></span>
+    </button>
+
+    <div class="language-picker__menu">
+        <ul class="language-picker__list">
+            {
+                locales.map((locale) => (
+                    <li class="language-picker__item">
+                        <a
+                            class="language-picker__link"
+                            href={getRelativeLocaleUrl(
+                                locale.code,
+                                currentPath,
+                            )}
+                            aria-current={
+                                locale.code === currentLocale ? "page" : undefined
+                            }
+                        >
+                            <span>{locale.name}</span>
+                            <span
+                                class="language-picker__chevron language-picker__chevron--left"
+                                style={`--icon-url: url("${chevronRightIcon}")`}
+                                aria-hidden="true"
+                            ></span>
+                            <span
+                                class="language-picker__chevron language-picker__chevron--right"
+                                style={`--icon-url: url("${chevronRightIcon}")`}
+                                aria-hidden="true"
+                            ></span>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</div>

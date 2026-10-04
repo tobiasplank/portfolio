@@ -1,0 +1,22 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import ComingSoon from "@/components/ComingSoon.astro"
+---
+
+<Layout title="Blog">
+    <Hero
+        staticText="Blog"
+        dynamicText={false}
+        compact={true}
+        tagSize="h1"
+    />
+    <ComingSoon
+        icon="blog"
+        iconColor="var(--color-accent-green)"
+        subheading="Der Blog ist für die Zukunft geplant"
+        description="Hier werde ich Blogbeiträge zu verschiedenen IT-Themen veröffentlichen.<br>
+        Zum Beispiel über Grundlagenwissen, Anleitungen oder<br>
+        persönliche Kommentare zu bestimmten Themen"
+    />
+</Layout>

@@ -1,0 +1,79 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import Grid from "@/components/ui/Grid.astro"
+import PolaroidStack from "@/components/Polaroid.astro";
+import PolaroidModal from "@/components/PhotoModal.astro";
+import Profile from "@/components/Profile.astro";
+import Experience from "@/components/Experience.astro";
+import ExperienceDetail from "@/components/ExperienceDetail.astro";
+
+const photos = [
+    {
+        src: '/about_photos/portrait.webp',
+        caption: 'Das bin ich! ^-^ (Nov, 2025)',
+        alt: 'Portrait',
+        description: 'Dieses Porträt wurde eigentlich für den Kommunalwahlkampf 2026 aufgenommen. Die Fotografin ' +
+            'hat mir jedoch erlaubt, das Foto auch für meine eigenen Zwecke zu verwenden. ☺️'
+    },
+    {
+        src: '/about_photos/stephens_cathedral.webp',
+        caption: 'Stephansdom (Mar, 2026)',
+        alt: 'Stephansdom, Wien',
+        description: 'Am ersten Abend meines Urlaubs in Wien spazierte ich mit meiner Bestie über den ' +
+            'Stephansplatz. Dort habe ich dieses Foto vom Stephansdom aufgenommen. Der Bau wurde 1578 ' +
+            'fertiggestellt. Wow! 😯'
+    },
+    {
+        src: '/about_photos/schoenbrunn_palace.webp',
+        caption: 'Schloss Schönbrunn (Mar, 2026)',
+        alt: 'Schloss Schönbrunn, Wien',
+        description: 'Am zweiten Tag haben wir Schloss Schönbrunn besucht. Für mich gehört es zu jedem Wien-Trip ' +
+            'dazu. Dort kann man problemlos fast einen ganzen Tag verbringen. Und ich snacke dort auch gerne die ' +
+            'berühmten Mozartkugeln. 🤭',
+        positionY: '80%'
+    },
+    {
+        src: '/about_photos/kunsthistorisches_museum.webp',
+        caption: 'Kunsthistorisches Museum (Mar, 2026)',
+        alt: 'Kunsthistorisches Museum, Wien',
+        description: 'Das war das letzte Foto meines Wien-Urlaubs und zugleich mein absoluter Favorit. Zu sehen ' +
+            'ist die Statue „Theseus besiegt den Kentauren“. Am besten gefällt mir das Café im Museum. Allein ' +
+            'die hauseigene Schwarzteemischung ist einen Besuch wert. 😋',
+        positionY: '0%'
+    },
+    {
+        src: '/about_photos/neuburg_palace.webp',
+        caption: 'Neuburg Schloss (May, 2026)',
+        alt: 'Neuburg Schloss',
+        description: 'Ich war mit meiner Work-Bestie in Neuburg. Wir lieben beide Fotografie und haben den ganzen ' +
+            'Abend lang das dortige Schloss fotografiert. 😊',
+        positionY: '30%'
+    },
+];
+
+---
+
+<Layout title="About">
+    <Hero
+        staticText="About me"
+        dynamicText={false}
+        compact={true}
+        tagSize="h1"
+    />
+    <Grid minHeight="calc(var(--grid-cell) * 150)" >
+        <div class="box bg-solid">
+            <Profile />
+        </div>
+        <div class="box bg-solid" style="overflow: hidden;">
+            <PolaroidStack photos={photos} width="340px" baseZIndex={0} />
+            <PolaroidModal />
+        </div>
+        <div class="box bg-solid">
+            <Experience />
+        </div>
+        <div class="box bg-solid">
+            <ExperienceDetail />
+        </div>
+    </Grid>
+</Layout>

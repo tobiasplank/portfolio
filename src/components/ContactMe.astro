@@ -8,44 +8,49 @@ import githubIcon from "pixelarticons/svg/github-solid.svg?url";
 import discordIcon from "pixelarticons/svg/discord-solid.svg?url";
 import mastodonIcon from "pixelarticons/svg/mastodon-solid.svg?url";
 
+import { defaultLocale, type locale } from "@/lib/i18n/locales";
+import { useTranslations } from "@/lib/i18n/utils";
+const currentLocale = (Astro.currentLocale ?? defaultLocale) as locale;
+const t = useTranslations(currentLocale);
+
 const links = [
     {
         label: "Mail",
-        description: "Directly wire me an email.",
+        description: t("contactme.mail"),
         href: "mailto:info@tobias-plank.de",
         icon: mailIcon,
         external: false
     },
     {
         label: "Video Call",
-        description: "Book a personal video call with me.",
+        description: t("contactme.vcall"),
         href: "https://calendar.proton.me/bookings#vnBOELbMc1zfseObG8KnUTRbJ5_xx7vKfufkuqEwjhM=",
         icon: videoCallIcon,
         external: true
     },
     {
         label: "LinkedIn",
-        description: "Connect with me on LinkedIn.",
+        description: t("contactme.linkedin"),
         href: "https://www.linkedin.com/in/planktobias",
         icon: linkedinIcon, external: true
     },
     {
         label: "GitHub",
-        description: "Checkout my projects on GitHub.",
+        description: t("contactme.github"),
         href: "https://github.com/tobiasplank",
         icon: githubIcon,
         external: true
     },
     {
         label: "Discord",
-        description: "Reach out to me on Discord.",
+        description: t("contactme.discord"),
         href: "https://discordapp.com/users/520244930191425566",
         icon: discordIcon,
         external: true
     },
     {
         label: "Mastodon",
-        description: "Follow me on the Fediverse.",
+        description: t("contactme.mastodon"),
         href: "https://mastodon.social/@tobiasplank",
         icon: mastodonIcon,
         external: true

@@ -4,9 +4,7 @@ import Hero from "@/components/Hero.astro";
 import Grid from "@/ui/Grid.astro";
 import Heading from "@/ui/Heading.astro";
 import "@/styles/legal.css";
-import { getPortfolioData } from "@/lib/portfolio-cache";
-
-export const prerender = false;
+import { getPortfolioData } from "@/lib/server/portfolio-cache";
 
 const { profile, contact } = await getPortfolioData();
 const fullName = [profile?.first_name, profile?.last_name]
@@ -98,10 +96,10 @@ const fullName = [profile?.first_name, profile?.last_name]
                 access times, browser details, and error logs. If you submit a recommendation through a form on this
                 website, the information you enter may also be processed by the hosting provider.<br><br>
 
-                I use this hosting service to make my portfolio available online and to ensure that it runs reliably
-                and securely. Where applicable, this processing is based on my legitimate interests under Art. 6(1)(f)
-                GDPR. In plain terms, this means I have a legitimate need to operate and protect my website, while
-                respecting your privacy.<br><br>
+                I use this hosting service to make my portfolio available online as well as to ensure that it runs
+                reliably and securely. Where applicable, this processing is based on my legitimate interests under Art.
+                6(1)(f) GDPR. In plain terms, this means I have a legitimate need to operate and protect my website,
+                while respecting your privacy.<br><br>
 
                 My hosting provider processes personal data only as needed to provide the hosting service and in
                 accordance with my instructions.<br><br>
@@ -135,9 +133,6 @@ const fullName = [profile?.first_name, profile?.last_name]
                 browser and device details, the pages or files you request, and information about network traffic. This
                 allows Cloudflare to deliver website content and act as a filter between your browser and my server,
                 helping to identify and block malicious or unwanted traffic.<br><br>
-
-                Depending on the security features in use, Cloudflare may also use cookies or similar technologies to
-                help distinguish legitimate visitors from automated or potentially harmful traffic.<br><br>
 
                 I use Cloudflare to help keep my website available, reliable, and secure. This is based on my
                 legitimate interest under Art. 6(1)(f) GDPR. In simple terms, I have a legitimate reason to operate and
@@ -191,14 +186,21 @@ const fullName = [profile?.first_name, profile?.last_name]
 
                 <p>Contact details:<br></p>
 
-                <div class="contact-block">
-                    <p>{fullName}</p>
-                    <address>{contact.address}</address>
-                </div>
+                {contact && (
+                        <div class="contact-block">
+                            <p>{fullName}</p>
+                            {contact.address && <address>{contact.address}</address>}
+                        </div>
+                )}
 
                 <p>
-                    Phone: <a href={`tel:${contact.phone}`}>{contact.phone}</a><br/>
-                    E-mail: <a href={`mailto:${contact.mail}`}>{contact.mail}</a>
+                    Phone: {contact?.phone && (
+                        <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+                    )}<br>
+
+                    E-mail: {contact?.mail && (
+                        <a href={`mailto:${contact.mail}`}>{contact.mail}</a>
+                    )}<br><br>
                 </p>
 
                 <p>
@@ -219,9 +221,9 @@ const fullName = [profile?.first_name, profile?.last_name]
 
                 I keep recommendations for my portfolio while they remain relevant and reasonably up to date. If a
                 recommendation is replaced, becomes outdated, or I have reason to believe it no longer reflects the
-                person’s views or our professional/personal relationship, I’ll remove it or stop displaying it. If I
-                can no longer stay in contact with the person who provided it and can’t reasonably confirm that it is
-                still valid, I may also remove it.<br><br>
+                person’s views or our professional respectively personal relationship, I’ll remove it or stop
+                displaying it. If I can no longer stay in contact with the person who provided it and can’t reasonably
+                confirm that it is still valid, I may also remove it.<br><br>
 
                 I may need to keep some information for longer where the law requires it
                 or permits it, for example to meet legal record-keeping obligations.
