@@ -1,10 +1,15 @@
 ---
-import { getPortfolioData, type Position } from "@/lib/portfolio-cache";
+import { getPortfolioData, type Position } from "@/lib/server/portfolio-cache";
 import Heading from "@/components/ui/Heading.astro";
 import Label from "@/components/ui/Label.astro";
+import { defaultLocale, type locale } from "@/lib/i18n/locales";
+import { useTranslations } from "@/lib/i18n/utils";
+
+const currentLocale = (Astro.currentLocale ?? defaultLocale) as locale;
+const t = useTranslations(currentLocale);
 
 // 1. Fetch data from in-memory cache (bypasses redundant DB queries)
-const { experience: rawPositions } = await getPortfolioData();
+const { experience: rawPositions } = await getPortfolioData(currentLocale);
 
 // 2. Group positions by company name
 const companyMap = new Map<string, Position[]>();
@@ -87,7 +92,7 @@ sortedCompanyGroups.forEach((group) => {
 
 <div class="experience-detail-card">
     <div class="experience-detail-header">
-        <Heading tagName="h4" tagSize="h4">Position Details</Heading>
+        <Heading tagName="h4" tagSize="h4">{t("experienceDetail.title")}</Heading>
     </div>
 
     <div class="details-container">
@@ -98,20 +103,20 @@ sortedCompanyGroups.forEach((group) => {
             >
                 {pos.isEmpty ? (
                     <div class="empty-state">
-                        <p class="empty-text">No additional details available for this position.</p>
+                        <p class="empty-text">{t("experienceDetail.empty")}</p>
                     </div>
                 ) : (
                     <div class="detail-content">
                         {pos.description && (
                             <div class="detail-section">
-                                <Heading tagName="h4" tagSize="h4">Description</Heading>
+                                <Heading tagName="h4" tagSize="h4">{t("experienceDetail.description")}</Heading>
                                 <p class="description-text">{pos.description}</p>
                             </div>
                         )}
 
                         {pos.projects.length > 0 && (
                             <div class="detail-section">
-                                <Heading tagName="h4" tagSize="h4">Projects</Heading>
+                                <Heading tagName="h4" tagSize="h4">{t("experienceDetail.projects")}</Heading>
                                 <div class="tag-list">
                                     {pos.projects.map((proj) => (
                                         <Label size="M">{proj}</Label>
@@ -122,7 +127,7 @@ sortedCompanyGroups.forEach((group) => {
 
                         {pos.certifications.length > 0 && (
                             <div class="detail-section">
-                                <Heading tagName="h4" tagSize="h4">Certifications</Heading>
+                                <Heading tagName="h4" tagSize="h4">{t("experienceDetail.certifications")}</Heading>
                                 <div class="tag-list">
                                     {pos.certifications.map((cert) => (
                                         <Label size="M">{cert}</Label>
@@ -133,7 +138,7 @@ sortedCompanyGroups.forEach((group) => {
 
                         {pos.skills.length > 0 && (
                             <div class="detail-section">
-                                <Heading tagName="h4" tagSize="h4">Skills</Heading>
+                                <Heading tagName="h4" tagSize="h4">{t("experienceDetail.skills")}</Heading>
                                 <div class="tag-list">
                                     {pos.skills.map((skill) => (
                                         <Label size="M">{skill}</Label>
@@ -169,6 +174,13 @@ sortedCompanyGroups.forEach((group) => {
 </script>
 
 <style>
+    @media (min-width: 40.001rem) {
+        :global(.box:has(.experience-detail-card)) {
+            min-height: 0;
+            max-height: calc(var(--grid-cell) * 75);
+        }
+    }
+
     .experience-detail-card {
         padding: calc(var(--grid-cell) * 4);
         display: flex;
@@ -176,6 +188,7 @@ sortedCompanyGroups.forEach((group) => {
         gap: calc(var(--grid-cell) * 3);
         color: var(--color-text);
         height: 100%;
+        min-height: 0;
         box-sizing: border-box;
     }
 
@@ -189,6 +202,11 @@ sortedCompanyGroups.forEach((group) => {
         display: flex;
         flex-direction: column;
         position: relative;
+        min-height: 0;
+        width: calc(100% + (var(--grid-cell) * 2));
+        padding-right: calc(var(--grid-cell) * 2);
+        box-sizing: border-box;
+        overflow-y: auto;
     }
 
     .detail-pane {

@@ -294,7 +294,7 @@ const total = photos.length;
                 const distance = Math.hypot(currentX, currentY);
                 const timeDiff = Date.now() - startTime;
 
-                // Klick-Erkennung (< 8px & < 250ms)
+                // Click detection (< 8px & < 250ms)
                 if (distance < 8 && timeDiff < 250) {
                     topCard.style.transform = '';
                     stack.classList.remove('is-dragging-active');

@@ -3,15 +3,22 @@ import "@/styles/nav.css";
 
 import Link from "@/components/ui/Link.astro";
 import ToggleTheme from "@/components/ui/ToggleTheme.astro";
+import LanguagePicker from "@/components/LanguagePicker.astro";
 import ContactMe from "@/components/ui/ContactMe.astro";
 import menuIcon from "pixelarticons/svg/menu.svg?url";
 import chevronRightIcon from "pixelarticons/svg/chevron-right.svg?url";
 
-const links = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Blog", href: "/blog" },
-    { label: "Projects", href: "/projects" }
+import { defaultLocale, type locale } from "@/lib/i18n/locales";
+import { useTranslations } from "@/lib/i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+const currentLocale = (Astro.currentLocale ?? defaultLocale) as locale;
+const t = useTranslations(currentLocale);
+
+const navLinks = [
+    { label: t("nav.home"), path: "" },
+    { label: t("nav.about"), path: "about" },
+    { label: t("nav.blog"), path: "blog" },
+    { label: t("nav.projects"), path: "projects" },
 ];
 ---
 
@@ -29,9 +36,9 @@ const links = [
         <div class="nav__mobile-dropdown">
             <ul class="nav__mobile-list">
                 {
-                    links.map((link) => (
+                    navLinks.map((link) => (
                         <li class="nav__mobile-item">
-                            <a href={link.href} class="nav__mobile-link">
+                            <a href={getRelativeLocaleUrl(currentLocale, link.path)} class="nav__mobile-link">
                                 <span class="nav__mobile-link-label">{link.label}</span>
 
                                 <span
@@ -55,9 +62,9 @@ const links = [
 
     <ul class="nav__list">
         {
-            links.map((link) => (
+            navLinks.map((link) => (
                     <li>
-                        <Link href={link.href} variant="nav" class="nav__link">
+                        <Link href={getRelativeLocaleUrl(currentLocale, link.path)} variant="nav" class="nav__link">
                             <span>{link.label}</span>
                         </Link>
                     </li>
@@ -66,5 +73,6 @@ const links = [
     </ul>
 
     <ToggleTheme />
+    <LanguagePicker />
     <ContactMe />
 </nav>

@@ -1,16 +1,21 @@
 ---
-import { getPortfolioData, type Position } from "@/lib/portfolio-cache";
+import { getPortfolioData, type Position } from "@/lib/server/portfolio-cache";
 import Heading from "@/components/ui/Heading.astro";
+import { defaultLocale, type locale } from "@/lib/i18n/locales";
+import { useTranslations } from "@/lib/i18n/utils";
+
+const currentLocale = (Astro.currentLocale ?? defaultLocale) as locale;
+const t = useTranslations(currentLocale);
 
 // Get positions directly from the in-memory cache
-const { experience: rawPositions } = await getPortfolioData();
+const { experience: rawPositions } = await getPortfolioData(currentLocale);
 
 function formatMonthYear(dateStr?: string | null): string {
-    if (!dateStr) return "Present";
+    if (!dateStr) return t("experience.present");
     const d = new Date(dateStr);
     return isNaN(d.getTime())
-        ? "Present"
-        : d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+        ? t("experience.present")
+        : d.toLocaleDateString(currentLocale === "de" ? "de-DE" : "en-US", { month: "short", year: "numeric" });
 }
 
 function calculateDuration(startStr?: string | null, endStr?: string | null): string {
@@ -28,9 +33,9 @@ function calculateDuration(startStr?: string | null, endStr?: string | null): st
     const remMonths = months % 12;
 
     const parts: string[] = [];
-    if (years > 0) parts.push(`${years} ${years === 1 ? "yr" : "yrs"}`);
-    if (remMonths > 0) parts.push(`${remMonths} ${remMonths === 1 ? "mo" : "mos"}`);
-    return parts.join(" ") || "1 mo";
+    if (years > 0) parts.push(t(years === 1 ? "duration.yearShortSingular" : "duration.yearShortPlural", { count: years }));
+    if (remMonths > 0) parts.push(t(remMonths === 1 ? "duration.monthShortSingular" : "duration.monthShortPlural", { count: remMonths }));
+    return parts.join(" ") || t("duration.monthShortSingular", { count: 1 });
 }
 
 interface CompanyGroup {
@@ -111,7 +116,7 @@ const companies = rawCompanies.sort((a, b) => b.latestTimestamp - a.latestTimest
 
 <div class="experience-card">
     <div class="experience-header">
-        <Heading tagName="h4" tagSize="h4">Experience</Heading>
+        <Heading tagName="h4" tagSize="h4">{t("experience.title")}</Heading>
     </div>
 
     <div class="company-list">
@@ -216,6 +221,13 @@ const companies = rawCompanies.sort((a, b) => b.latestTimestamp - a.latestTimest
 </script>
 
 <style>
+    @media (min-width: 40.001rem) {
+        :global(.box:has(.experience-card)) {
+            min-height: 0;
+            max-height: calc(var(--grid-cell) * 75);
+        }
+    }
+
     .experience-card {
         padding: calc(var(--grid-cell) * 4);
         display: flex;
@@ -223,6 +235,7 @@ const companies = rawCompanies.sort((a, b) => b.latestTimestamp - a.latestTimest
         gap: calc(var(--grid-cell) * 3);
         color: var(--color-text);
         height: 100%;
+        min-height: 0;
         box-sizing: border-box;
     }
 
@@ -235,6 +248,12 @@ const companies = rawCompanies.sort((a, b) => b.latestTimestamp - a.latestTimest
         display: flex;
         flex-direction: column;
         gap: calc(var(--grid-cell) * 4);
+        flex: 1;
+        min-height: 0;
+        width: calc(100% + (var(--grid-cell) * 2));
+        padding-right: calc(var(--grid-cell) * 2);
+        box-sizing: border-box;
+        overflow-y: auto;
     }
 
     .company-item {

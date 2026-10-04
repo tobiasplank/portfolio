@@ -4,9 +4,7 @@ import Hero from "@/components/Hero.astro";
 import Grid from "@/ui/Grid.astro";
 import Heading from "@/ui/Heading.astro";
 import "@/styles/legal.css";
-import { getPortfolioData } from "@/lib/portfolio-cache";
-
-export const prerender = false;
+import { getPortfolioData } from "@/lib/server/portfolio-cache";
 
 const { profile, contact } = await getPortfolioData();
 const fullName = [profile?.first_name, profile?.last_name]
@@ -23,20 +21,24 @@ const fullName = [profile?.first_name, profile?.last_name]
     />
     <Grid cols={1} rows={1}>
         <div class="box bg-solid legal-content">
-            <Heading tagName="h2" tagSize="h3">
-                Site Notice
-            </Heading>
-            <div class="contact-block">
-                <p>{fullName}</p>
-                <address>{contact.address}</address>
-            </div>
+            {contact && (
+                <div class="contact-block">
+                    <p>{fullName}</p>
+                    {contact.address && <address>{contact.address}</address>}
+                </div>
+            )}
 
             <Heading tagName="h2" tagSize="h3">
                 Contact
             </Heading>
             <p>
-                Phone: <a href={`tel:${contact.phone}`}>{contact.phone}</a><br>
-                E-mail: <a href={`mailto:${contact.mail}`}>{contact.mail}</a><br><br>
+                Phone: {contact?.phone && (
+                    <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+                )}<br>
+
+                E-mail: {contact?.mail && (
+                    <a href={`mailto:${contact.mail}`}>{contact.mail}</a>
+                )}<br><br>
 
                 I may not always be able to answer the phone right away.<br>
                 If your number is visible, I’ll do my best to call you back.<br>
@@ -46,10 +48,12 @@ const fullName = [profile?.first_name, profile?.last_name]
             <Heading tagName="h2" tagSize="h3">
                 Person responsible for editorial
             </Heading>
-            <div class="contact-block">
-                <p>{fullName}</p>
-                <address>{contact.address}</address>
-            </div>
+            {contact && (
+                    <div class="contact-block">
+                        <p>{fullName}</p>
+                        {contact.address && <address>{contact.address}</address>}
+                    </div>
+            )}
         </div>
     </Grid>
 </Layout>

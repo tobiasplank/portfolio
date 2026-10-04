@@ -1,0 +1,21 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import ComingSoon from "@/components/ComingSoon.astro"
+---
+
+<Layout title="Projekte">
+    <Hero
+        staticText="Projekte"
+        dynamicText={false}
+        compact={true}
+        tagSize="h1"
+    />
+    <ComingSoon
+        icon="list-box"
+        iconColor="var(--color-accent-purple)"
+        subheading="Der Projektbereich ist für die Zukunft geplant"
+        description="Hier werde ich Details zu meinen interessantesten Projekten veröffentlichen. <br>
+        Zum Beispiel über dieses Portfolio und dessen Infrastruktur."
+    />
+</Layout>

@@ -1,0 +1,111 @@
+---
+// Page layout.
+import Layout from "@/layouts/Layout.astro";
+
+// Page-specific content.
+import Hero from "@/components/Hero.astro";
+import Grid from "@/components/ui/Grid.astro";
+import Feature from "@/components/Feature.astro";
+import Link from "@/components/ui/Link.astro";
+---
+
+<Layout title="Home">
+    <Hero
+        staticText="Hallo! Ich bin Tobi,<br>ein System Engineer für"
+        sequences={
+            [
+                {
+                    text: "HCI",
+                    icon: "server-3",
+                    label: "server",
+                    color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
+                },
+                {
+                    text: "Linux",
+                    icon: "linux",
+                    label: "linux",
+                    color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
+                },
+                {
+                    text: "Virtualisierung",
+                    icon: "box-stack",
+                    label: "virtual machine",
+                    color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
+                },
+                {
+                    text: "Automatisierung",
+                    icon: "file-big-code",
+                    label: "code",
+                    color: { dark: "rgb(190 92 255)", light: "rgb(200 110 0)" },
+                },
+            ]
+        }
+    />
+    <Grid minHeight="calc(var(--grid-cell) * 78)" >
+        <div class="box bg-solid box--centered">
+            <Feature
+                icon="user"
+                heading="About me"
+                description="Hier findest du einen kurzen Steckbrief über mich sowie eine Übersicht zu meiner
+                bisherigen Erfahrung."
+                iconColor="var(--color-accent-blue)"
+            />
+            <Link href="/de/about" variant="secondary">Readme</Link>
+        </div>
+        <div class="box bg-solid box--centered">
+            <Feature
+                    icon="blog"
+                    heading="Blog (WIP)"
+                    description="In meinem Blog werde ich Beiträge zu verschiedenen Themen rund um IT
+                    veröffentlichen."
+                    iconColor="var(--color-accent-green)"
+            />
+            <Link href="/de/blog" variant="secondary">Lies den Blog</Link>
+        </div>
+        <div class="box bg-solid box--centered">
+            <Feature
+                    icon="list-box"
+                    heading="Projekte (WIP)"
+                    description="In diesem Abschnitt werde ich Einzelheiten zu meinen interessantesten Projekten
+                    veröffentlichen."
+                    iconColor="var(--color-accent-purple)"
+            />
+            <Link href="/de/projects" variant="secondary">Meine Projekte</Link>
+        </div>
+        <div class="box bg-solid box--centered">
+            <Feature
+                    icon="mail"
+                    heading="Kontaktiere mich"
+                    description="Du kannst dich gerne bei mir melden, wenn du Fragen hast oder einfach nur mal Hallo
+                    sagen möchtest."
+                    iconColor="var(--color-accent-yellow)"
+            />
+            <Link href="/de/contactme" variant="secondary">Sag hallo</Link>
+        </div>
+    </Grid>
+</Layout>
+
+<style>
+    .box--centered {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: calc(var(--grid-cell) * 2);
+    }
+
+    .box--centered :global(.feature) {
+        flex: 0 1 auto;
+        padding-block: 0;
+    }
+
+    .box--centered :global(a) {
+        margin-top: 0;
+    }
+
+    @media (max-width: 40rem) {
+        .box--centered {
+            padding-block: calc(var(--grid-cell) * 3);
+        }
+    }
+</style>

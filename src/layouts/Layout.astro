@@ -18,10 +18,12 @@ const {
     showSideLines = true,
     ...headProps
 } = Astro.props;
+
+const currentLocale = Astro.currentLocale;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={currentLocale}>
 <Head {...headProps} />
 <body>
 <div class:list={["site-shell", { "site-shell--no-lines": !showSideLines }]}>

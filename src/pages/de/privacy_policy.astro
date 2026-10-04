@@ -1,0 +1,444 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/Hero.astro";
+import Grid from "@/ui/Grid.astro";
+import Heading from "@/ui/Heading.astro";
+import "@/styles/legal.css";
+import { getPortfolioData } from "@/lib/server/portfolio-cache";
+
+const { profile, contact } = await getPortfolioData();
+const fullName = [profile?.first_name, profile?.last_name]
+    .filter(Boolean)
+    .join(" ");
+---
+
+<Layout title="Datenschutzerklärung">
+    <Hero
+            staticText="Datenschutzerklärung"
+            dynamicText={false}
+            compact={true}
+            tagSize="h1"
+    />
+    <Grid cols={1} rows={1}>
+        <div class="box bg-solid legal-content">
+            <Heading tagName="h2" tagSize="h2" animated={true}>
+                1. Datenschutz auf einen Blick
+            </Heading>
+
+            <Heading tagName="h3" tagSize="h3">
+                Allgemeine Hinweise
+            </Heading>
+            <p>
+                Dieser Abschnitt gibt dir einen kurzen Überblick darüber, was mit deinen personenbezogenen Daten
+                geschieht, wenn du meine Portfolio-Website besuchst. „Personenbezogene Daten“ sind Informationen,
+                durch die du direkt oder in Verbindung mit anderen Angaben identifiziert werden kannst. Weitere
+                Informationen dazu, wie ich diese Daten verarbeite und wie du mich erreichen kannst, findest du in
+                den folgenden Abschnitten.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Datenerfassung auf dieser Website
+            </Heading>
+
+            <Heading tagName="h4" tagSize="h4">
+                Wer ist für die Erfassung von Daten auf dieser Website verantwortlich (also der „Verantwortliche“)?
+            </Heading>
+            <p>
+                Ich bin für den Umgang mit personenbezogenen Daten verantwortlich, die über diese Website erfasst
+                werden. Im Datenschutzrecht wird diese Rolle als „Verantwortlicher“ bezeichnet. Meine Kontaktdaten
+                findest du im Abschnitt „Wer ist für diese Website verantwortlich?“.
+            </p>
+
+            <Heading tagName="h4" tagSize="h4">
+                Wie erfasse ich deine Daten?
+            </Heading>
+            <p>
+                Ich erhalte personenbezogene Daten, wenn du dich entscheidest, sie mir mitzuteilen. Das können
+                beispielsweise Angaben sein, die du in ein Formular einträgst, um eine Empfehlung über mich
+                abzugeben, oder die du in andere Formulare eingibst.<br><br>
+
+                Bestimmte technische Informationen, zum Beispiel Angaben zu deinem Browser und Betriebssystem oder zum
+                Zeitpunkt deines Besuchs, können außerdem automatisch von den Systemen erfasst werden, über die diese
+                Website betrieben wird. Das geschieht, wenn du die Website aufrufst.
+            </p>
+
+            <Heading tagName="h4" tagSize="h4">
+                Wofür verwende ich deine Daten?
+            </Heading>
+            <p>
+                Ich verwende technische Informationen, damit meine Portfolio-Website ordnungsgemäß funktioniert und
+                ich Probleme beheben kann. Wenn du eine Empfehlung über mich einreichst, nutze ich die von dir
+                angegebenen Informationen, um die Empfehlung zu prüfen und sie gegebenenfalls in mein Portfolio
+                aufzunehmen.
+            </p>
+
+            <Heading tagName="h4" tagSize="h4">
+                Welche Rechte hast du in Bezug auf deine personenbezogenen Daten?
+            </Heading>
+            <p>
+                Du hast das Recht, mich zu fragen, welche personenbezogenen Daten ich über dich gespeichert habe,
+                woher sie stammen, ob und an wen sie weitergegeben wurden und wofür ich sie verwende. Du kannst
+                außerdem verlangen, dass ich unrichtige Angaben berichtige oder deine Daten unter bestimmten
+                Voraussetzungen lösche oder ihre Verarbeitung einschränke.<br><br>
+
+                Wenn ich deine Daten auf Grundlage deiner Einwilligung verwende, kannst du diese Einwilligung
+                jederzeit widerrufen. Der Widerruf wirkt sich nicht auf die Verwendung deiner Daten aus, die bis
+                dahin erfolgt ist. Je nach Situation hast du außerdem das Recht, bestimmten Arten der
+                Datenverarbeitung zu widersprechen oder eine Kopie deiner Daten in einem übertragbaren Format
+                anzufordern.<br><br>
+
+                Du kannst dich auch bei der für dich zuständigen Datenschutzaufsichtsbehörde beschweren. Wenn du eine
+                Frage hast oder eines dieser Rechte ausüben möchtest, kontaktiere mich bitte über die Angaben in
+                dieser Datenschutzerklärung.
+            </p>
+
+
+            <Heading tagName="h2" tagSize="h2" animated={true}>
+                2. Externes Hosting meiner Website
+            </Heading>
+            <p>
+                Ich hoste diese Website bei der netcup GmbH. Damit die Website verfügbar und sicher ist, kann der
+                Hosting-Anbieter technische Informationen über Besuche verarbeiten, zum Beispiel IP-Adressen,
+                aufgerufene Seiten, Zugriffszeiten, Browserangaben und Fehlerprotokolle. Wenn du über ein Formular
+                auf dieser Website eine Empfehlung einreichst, kann der Hosting-Anbieter auch die von dir
+                eingegebenen Informationen verarbeiten.<br><br>
+
+                Ich nutze diesen Hosting-Dienst, um mein Portfolio online bereitzustellen sowie einen zuverlässigen
+                und sicheren Betrieb zu gewährleisten. Soweit einschlägig, erfolgt diese Verarbeitung auf Grundlage
+                meines berechtigten Interesses gemäß Art. 6 Abs. 1 lit. f DSGVO. Einfach gesagt: Ich habe ein
+                berechtigtes Interesse daran, meine Website zu betreiben und zu schützen und dabei deine Privatsphäre
+                zu achten.<br><br>
+
+                Mein Hosting-Anbieter verarbeitet personenbezogene Daten nur, soweit es für die Bereitstellung des
+                Hosting-Dienstes erforderlich ist, und nach meinen Weisungen.<br><br>
+
+                Hosting-Anbieter:<br><br>
+
+                netcup GmbH<br>
+                Emmy-Noether-Straße 10<br>
+                D-76131 Karlsruhe
+            </p>
+
+            <Heading tagName="h4" tagSize="h4">
+                Meine Vereinbarung mit dem Hosting-Anbieter
+            </Heading>
+            <p>
+                Für das Hosting dieser Website habe ich mit netcup einen Vertrag zur Auftragsverarbeitung
+                (AV-Vertrag) abgeschlossen. Ein solcher Vertrag ist datenschutzrechtlich vorgeschrieben. Er legt
+                fest, dass netcup personenbezogene Daten in meinem Auftrag, nach meinen dokumentierten Weisungen und
+                gemäß den Vorgaben der DSGVO verarbeitet.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Sicherheit und Bereitstellung der Website (Cloudflare)
+            </Heading>
+            <p>
+                Ich nutze Dienste der Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA (im Folgenden
+                „Cloudflare“), um DNS- und Content-Delivery-Dienste bereitzustellen und meine Portfolio-Website zu
+                schützen.<br><br>
+
+                Meine Website wird über Cloudflare proxied. Das bedeutet, dass Anfragen deines Browsers zunächst über
+                das Netzwerk von Cloudflare laufen, bevor sie meinen Server erreichen. Cloudflare kann dabei
+                technische Informationen wie deine IP-Adresse, Angaben zu deinem Browser und Gerät, die von dir
+                angeforderten Seiten oder Dateien sowie Informationen zum Netzwerkverkehr verarbeiten. So kann
+                Cloudflare Inhalte der Website ausliefern und als Filter zwischen deinem Browser und meinem Server
+                fungieren, um schädlichen oder unerwünschten Datenverkehr zu erkennen und zu blockieren.<br><br>
+
+                Ich nutze Cloudflare, damit meine Website verfügbar, zuverlässig und sicher bleibt. Die Verarbeitung
+                erfolgt auf Grundlage meines berechtigten Interesses gemäß Art. 6 Abs. 1 lit. f DSGVO. Einfach gesagt:
+                Ich habe ein berechtigtes Interesse daran, meine Website zu betreiben und zu schützen und dabei deine
+                Privatsphäre zu achten.<br><br>
+
+                Die Übermittlung von Daten in die USA erfolgt auf Grundlage der Standardvertragsklauseln (SCC) der
+                Europäischen Kommission. Weitere Informationen zur Sicherheit und zum Datenschutz bei Cloudflare
+                findest du hier:<br>
+                <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">
+                    https://www.cloudflare.com/privacypolicy/
+                </a>.<br><br>
+
+                Das Unternehmen ist nach dem „EU-US Data Privacy Framework“ (DPF) zertifiziert. Das DPF ist eine
+                Vereinbarung zwischen der Europäischen Union und den USA, die sicherstellen soll, dass bei der
+                Verarbeitung von Daten in den USA europäische Datenschutzstandards eingehalten werden. Jedes nach dem
+                DPF zertifizierte Unternehmen ist verpflichtet, diese Datenschutzstandards einzuhalten. Weitere
+                Informationen findest du unter folgendem Link:<br>
+                <a href="https://www.dataprivacyframework.gov/participant/5666" target="_blank" rel="noopener noreferrer">
+                    https://www.dataprivacyframework.gov/participant/5666
+                </a>.
+            </p>
+
+
+            <Heading tagName="h2" tagSize="h2" animated={true}>
+                3. Allgemeine und gesetzlich vorgeschriebene Informationen
+            </Heading>
+            <Heading tagName="h3" tagSize="h3">
+                Wie gehe ich mit deinen personenbezogenen Daten um und wie schütze ich sie?
+            </Heading>
+            <p>
+                Ich nehme den Schutz der Privatsphäre der Besucherinnen und Besucher meiner Portfolio-Website ernst.
+                Ich verarbeite personenbezogene Daten gemäß den geltenden Datenschutzgesetzen und den Angaben in
+                dieser Datenschutzerklärung.<br><br>
+
+                Wenn du meine Website besuchst, können bestimmte technische Informationen verarbeitet werden, damit
+                die Website bereitgestellt und geschützt werden kann. Wenn du mir Informationen mitteilst –
+                beispielsweise, indem du eine Empfehlung über mich für mein Portfolio einreichst –, verwende ich diese
+                wie in dieser Datenschutzerklärung beschrieben.<br><br>
+
+                Bitte beachte, dass die Übermittlung von Informationen über das Internet, auch per E-Mail,
+                Sicherheitsrisiken mit sich bringen kann. Obwohl ich angemessene Maßnahmen zum Schutz
+                personenbezogener Daten ergreife, kann keine Übermittlung und keine Speicherung vollständige
+                Sicherheit garantieren.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Wer ist für diese Website verantwortlich?
+            </Heading>
+            <div class="legal-section">
+                <p>
+                    Ich bin für den Umgang mit personenbezogenen Daten auf dieser Website verantwortlich. Im
+                    Datenschutzrecht wird diese Rolle als „Verantwortlicher“ bezeichnet.<br>
+                </p>
+
+                <p>Kontaktdaten:<br></p>
+
+                {contact && (
+                        <div class="contact-block">
+                            <p>{fullName}</p>
+                            {contact.address && <address>{contact.address}</address>}
+                        </div>
+                )}
+
+                <p>
+                    Telefon: {contact?.phone && (
+                        <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+                )}<br>
+
+                    E-Mail: {contact?.mail && (
+                        <a href={`mailto:${contact.mail}`}>{contact.mail}</a>
+                )}<br><br>
+                </p>
+
+                <p>
+                    Der Verantwortliche ist die Person oder Organisation, die entscheidet, warum und wie
+                    personenbezogene Daten verarbeitet werden, zum Beispiel Namen oder E-Mail-Adressen. In diesem
+                    Fall bin das ich.<br/><br/>
+
+                    Ich kann nicht immer sofort ans Telefon gehen. Wenn deine Rufnummer angezeigt wird, bemühe ich
+                    mich, dich zurückzurufen. Wenn du deine Rufnummer unterdrückt hast, kann ich dich nicht
+                    zurückrufen.
+                </p>
+            </div>
+
+            <Heading tagName="h3" tagSize="h3">
+                Wie lange speichere ich deine Informationen?
+            </Heading>
+            <p>
+                Ich speichere personenbezogene Daten nur so lange, wie es für den Zweck erforderlich ist, für den sie
+                erhoben wurden, sofern in dieser Datenschutzerklärung keine andere Speicherdauer angegeben ist.<br><br>
+
+                Empfehlungen für mein Portfolio speichere ich, solange sie relevant und hinreichend aktuell sind.
+                Wenn eine Empfehlung ersetzt oder veraltet ist oder ich Grund zu der Annahme habe, dass sie nicht mehr
+                die Ansichten der betreffenden Person oder unsere berufliche beziehungsweise persönliche Beziehung
+                zutreffend wiedergibt, entferne ich sie oder zeige sie nicht mehr an. Wenn ich keinen Kontakt mehr zu
+                der Person habe, von der die Empfehlung stammt, und nicht mit vertretbarem Aufwand bestätigen kann,
+                dass sie noch gültig ist, kann ich sie ebenfalls entfernen.<br><br>
+
+                Ich kann bestimmte Informationen länger speichern müssen, wenn dies gesetzlich vorgeschrieben oder
+                zulässig ist, zum Beispiel zur Erfüllung gesetzlicher Aufbewahrungspflichten.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Warum darf ich personenbezogene Daten verwenden? (Rechtsgrundlage)
+            </Heading>
+            <p>
+                Auf welcher Rechtsgrundlage ich personenbezogene Daten verwende, hängt davon ab, wofür ich sie nutze.
+                Wenn jemand zum Beispiel eine Empfehlung einreicht und einwilligt, dass ich sie in meinem Portfolio
+                veröffentliche, kann ich mich auf die Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO stützen. Die
+                Einwilligung kann jederzeit widerrufen werden. Anschließend entferne ich die Empfehlung oder lösche
+                sie.<br><br>
+
+                Für den Betrieb, die Wartung und den Schutz meiner Website kann ich mich auf meine berechtigten
+                Interessen gemäß Art. 6 Abs. 1 lit. f DSGVO stützen, zum Beispiel wenn ich technische Informationen
+                verarbeite, die zum Schutz der Website erforderlich sind. Das bedeutet, dass ich einen berechtigten
+                Grund für diese Verarbeitung habe und dabei deine Rechte und deine Privatsphäre berücksichtige.<br><br>
+
+                In manchen Fällen muss ich personenbezogene Daten verarbeiten, um eine rechtliche Verpflichtung gemäß
+                Art. 6 Abs. 1 lit. c DSGVO zu erfüllen. Wenn für eine bestimmte Verwendung deiner Daten eine andere
+                Rechtsgrundlage gilt, erläutere ich dies im entsprechenden Abschnitt dieser Datenschutzerklärung.<br><br>
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Wer kann deine personenbezogenen Daten verarbeiten?
+            </Heading>
+            <p>
+                Ich nutze netcup für das Hosting meiner Portfolio-Website und Cloudflare, um sie bereitzustellen und zu
+                schützen. Wenn du die Website besuchst, können diese Anbieter technische Informationen wie deine
+                IP-Adresse und Angaben zu deiner Anfrage verarbeiten, soweit dies zur Erbringung ihrer Dienste
+                erforderlich ist.<br><br>
+
+                Ich habe mit netcup einen Vertrag zur Auftragsverarbeitung abgeschlossen. Personenbezogene Daten, die
+                netcup in meinem Auftrag verarbeitet, werden gemäß diesem Vertrag und meinen Weisungen verarbeitet.
+                Cloudflare verarbeitet Informationen im Rahmen der Dienste, die das Unternehmen für meine Website
+                erbringt. Weitere Einzelheiten dazu findest du im Abschnitt zu Cloudflare in dieser
+                Datenschutzerklärung.<br><br>
+
+                Ich gebe personenbezogene Daten nicht zu Marketingzwecken an andere Organisationen weiter. Ich
+                übermittle sie nur, wenn ich gesetzlich dazu verpflichtet bin.<br><br>
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Wie kannst du deine Einwilligung widerrufen?
+            </Heading>
+            <p>
+                Wenn ich deine personenbezogenen Daten auf Grundlage deiner Einwilligung verwende, kannst du diese
+                jederzeit widerrufen, indem du mich kontaktierst. Wenn du beispielsweise deine Einwilligung zur
+                Veröffentlichung einer Empfehlung in meinem Portfolio widerrufst, entferne ich sie von der Website.
+                Der Widerruf ändert nichts daran, dass die Verarbeitung bis zu deinem Widerruf rechtmäßig war. Sobald
+                du deine Einwilligung widerrufst, zeige ich die Empfehlung nicht mehr in meinem Portfolio an. Ich
+                lösche die Informationen außerdem, wenn ich sie nicht aus einem anderen rechtmäßigen Grund weiterhin
+                speichern muss.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Dein Recht, bestimmten Verarbeitungen zu widersprechen (Art. 21 DSGVO)
+            </Heading>
+
+            <p>
+                WENN ICH DEINE PERSONENBEZOGENEN DATEN AUF GRUNDLAGE MEINER BERECHTIGTEN INTERESSEN GEMÄSS ART. 6 ABS. 1
+                LIT. F DSGVO VERARBEITE, KANNST DU DIESER VERARBEITUNG JEDERZEIT AUS GRÜNDEN WIDERSPRECHEN, DIE SICH
+                AUS DEINER BESONDEREN SITUATION ERGEBEN. ICH WERDE DEINE DATEN DANN NICHT MEHR VERARBEITEN, ES SEI
+                DENN, ICH KANN ZWINGENDE SCHUTZWÜRDIGE GRÜNDE FÜR DIE VERARBEITUNG NACHWEISEN, DIE DEINE INTERESSEN,
+                RECHTE UND FREIHEITEN ÜBERWIEGEN, ODER DIE VERARBEITUNG DIENT DER GELTENDMACHUNG, AUSÜBUNG ODER
+                VERTEIDIGUNG VON RECHTSANSPRÜCHEN.<br><br>
+
+                WENN DU FRAGEN HAST ODER WIDERSPRUCH EINLEGEN MÖCHTEST, KONTAKTIERE MICH BITTE ÜBER DIE KONTAKTDATEN
+                IN DIESER DATENSCHUTZERKLÄRUNG.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Dein Recht, dich bei einer Datenschutzaufsichtsbehörde zu beschweren
+            </Heading>
+            <p>
+                Wenn du der Ansicht bist, dass ich deine personenbezogenen Daten unter Verstoß gegen das
+                Datenschutzrecht verarbeitet habe, kannst du dich bei einer Datenschutzaufsichtsbehörde beschweren.
+                In der Regel kannst du dich an die Behörde an deinem Wohn- oder Arbeitsort oder am Ort des vermuteten
+                Verstoßes wenden. Dieses Recht besteht unabhängig davon, ob du weitere rechtliche Schritte
+                einleitest.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Dein Recht, deine Daten zu erhalten oder übertragen zu lassen
+            </Heading>
+            <p>
+                Wenn das Recht auf Datenübertragbarkeit anwendbar ist, kannst du verlangen, dass ich dir
+                personenbezogene Daten, die du mir mitgeteilt hast, in einem gängigen, maschinenlesbaren Format
+                bereitstelle. Dieses Recht gilt, wenn ich die Daten automatisiert auf Grundlage deiner Einwilligung
+                oder eines Vertrags mit dir verarbeite. Soweit dies technisch möglich ist, kannst du außerdem
+                verlangen, dass ich die Daten direkt an einen anderen Verantwortlichen übermittle.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Dein Recht auf Auskunft, Berichtigung oder Löschung deiner Daten
+            </Heading>
+            <p>
+                Du kannst mich fragen, ob ich personenbezogene Daten über dich gespeichert habe, und, sofern dir
+                dieses Recht gesetzlich zusteht, eine Kopie davon anfordern. Du kannst außerdem erfragen, woher die
+                Daten stammen, an wen sie weitergegeben wurden und warum ich sie verwende. Wenn Angaben unrichtig
+                sind, kannst du deren Berichtigung verlangen. Unter bestimmten Voraussetzungen kannst du auch die
+                Löschung deiner Daten verlangen. Wenn du eine Frage hast oder eines dieser Rechte ausüben möchtest,
+                kontaktiere mich bitte über die Angaben in dieser Datenschutzerklärung.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                Dein Recht, die Verarbeitung deiner Daten einzuschränken
+            </Heading>
+            <p>
+                In bestimmten Situationen kannst du verlangen, dass ich die Verarbeitung deiner personenbezogenen
+                Daten vorübergehend einschränke. Dieses Recht kann in folgenden Fällen gelten:
+            </p>
+            <ul>
+                <li>
+                    Wenn du der Ansicht bist, dass deine personenbezogenen Daten unrichtig sind, kann die Verarbeitung
+                    eingeschränkt werden, während ich die Angaben überprüfe.
+                </li>
+                <li>
+                    Wenn du der Ansicht bist, dass ich deine Daten unrechtmäßig verarbeitet habe, kannst du verlangen,
+                    dass ich ihre Verwendung einschränke, anstatt sie zu löschen.
+                </li>
+                <li>
+                    Wenn ich deine Daten nicht mehr benötige, du sie aber zur Geltendmachung, Ausübung oder
+                    Verteidigung eines Rechtsanspruchs brauchst.
+                </li>
+                <li>
+                    Wenn du der Verarbeitung gemäß Art. 21 Abs. 1 DSGVO widersprochen hast, solange geprüft wird, ob
+                    meine Interessen oder deine Rechte und Interessen überwiegen.
+                </li>
+            </ul>
+            <p>
+                Wenn die Verarbeitung eingeschränkt ist, speichere ich deine Daten grundsätzlich, verwende sie aber
+                nicht für andere Zwecke. Das Gesetz erlaubt bestimmte Ausnahmen, zum Beispiel wenn du eingewilligt
+                hast, die Daten für einen Rechtsanspruch benötigt werden oder die Verarbeitung zum Schutz der Rechte
+                einer anderen Person oder aus einem wichtigen öffentlichen Interesse erforderlich ist. Wenn du eine
+                Einschränkung beantragen möchtest, kontaktiere mich bitte über die Angaben in dieser
+                Datenschutzerklärung.
+            </p>
+
+            <Heading tagName="h3" tagSize="h3">
+                SSL- und/oder TLS-Verschlüsselung (HTTPS)
+            </Heading>
+            <p>
+                Diese Website verwendet HTTPS, um Informationen zu schützen, die zwischen deinem Browser und der
+                Website übertragen werden. Du erkennst eine verschlüsselte Verbindung in der Regel daran, dass die
+                Adresse mit „https://“ beginnt und dein Browser ein Schloss-Symbol anzeigt.<br><br>
+
+                Die Verschlüsselung hilft dabei, zu verhindern, dass Dritte Informationen während der Übertragung
+                lesen können – zum Beispiel, wenn du eine Empfehlung einreichst. Sie garantiert jedoch keine
+                vollständige Sicherheit und schützt Informationen nicht mehr, sobald sie die Website oder die
+                Dienstleister erreicht haben, die sie verarbeiten.
+            </p>
+
+
+            <Heading tagName="h2" tagSize="h2" animated={true}>
+                4. Datenerfassung auf dieser Website
+            </Heading>
+            <Heading tagName="h3" tagSize="h3">
+                Kontaktaufnahme per E-Mail oder Telefon
+            </Heading>
+            <p>
+                Wenn du mich per E-Mail oder Telefon kontaktierst, verwende ich die von dir mitgeteilten Informationen
+                – zum Beispiel deinen Namen, deine Kontaktdaten und deine Nachricht –, um dir zu antworten. Wenn du
+                mich anrufst und deine Rufnummer angezeigt wird, kann ich sie verwenden, um dich zurückzurufen, falls
+                ich deinen Anruf nicht entgegennehmen kann.<br><br>
+
+                Ich verarbeite diese Informationen, um deine Anfrage zu bearbeiten. Dies geschieht grundsätzlich auf
+                Grundlage meines berechtigten Interesses daran, Anfragen zu beantworten (Art. 6 Abs. 1 lit. f DSGVO).
+                Ich speichere die Informationen nur so lange, wie es zur Bearbeitung deiner Anfrage erforderlich ist,
+                sofern ich nicht gesetzlich zu einer längeren Speicherung verpflichtet bin. Ich gebe sie nicht an
+                andere weiter, es sei denn, dies ist zur Bearbeitung deiner Anfrage erforderlich oder ich bin
+                gesetzlich dazu verpflichtet.
+            </p>
+
+
+            <Heading tagName="h2" tagSize="h2" animated={true}>
+                5. Plugins und Tools
+            </Heading>
+            <Heading tagName="h3" tagSize="h3">
+                Google Fonts (lokale Einbindung)
+            </Heading>
+            <p>
+                Meine Website verwendet sogenannte Google Fonts von Google, damit die Schriftarten auf der Website
+                einheitlich dargestellt werden. Die Google Fonts sind lokal installiert. Das bedeutet, dass bei ihrer
+                Verwendung keine Verbindung zu den Servern von Google hergestellt wird.<br><br>
+
+                Weitere Informationen zu Google Fonts findest du unter folgendem Link:<br>
+                <a href="https://developers.google.com/fonts/faq" target="_blank" rel="noopener noreferrer">
+                    https://developers.google.com/fonts/faq
+                </a><br><br>
+
+                Die Datenschutzerklärung von Google findest du hier:<br>
+                <a href="https://policies.google.com/privacy?hl=en" target="_blank" rel="noopener noreferrer">
+                    https://policies.google.com/privacy?hl=en
+                </a><br><br>
+            </p>
+        </div>
+    </Grid>
+</Layout>

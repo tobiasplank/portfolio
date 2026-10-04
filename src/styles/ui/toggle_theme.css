@@ -22,8 +22,7 @@
         background-color 220ms ease;
 }
 
-.theme-toggle::before,
-.theme-toggle::after {
+.theme-toggle::before {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -33,14 +32,7 @@
     pointer-events: none;
     content: "";
     background: var(--color-line);
-}
-
-.theme-toggle::before {
     left: 0;
-}
-
-.theme-toggle::after {
-    right: 0;
 }
 
 .theme-icon {

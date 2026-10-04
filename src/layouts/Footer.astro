@@ -4,33 +4,46 @@ import copyrightIcon from "pixelarticons/svg/copyright.svg?url";
 
 import Link from "@/components/ui/Link.astro";
 import "@/styles/footer.css";
+import { getPortfolioData } from "@/lib/server/portfolio-cache";
+
+import { defaultLocale, type locale } from "@/lib/i18n/locales";
+import { useTranslations } from "@/lib/i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+const currentLocale = (Astro.currentLocale ?? defaultLocale) as locale;
+const t = useTranslations(currentLocale);
+
+const { profile} = await getPortfolioData(currentLocale);
+const fullName = [profile?.first_name, profile?.last_name]
+    .filter(Boolean)
+    .join(" ");
 ---
 
 <footer class="footer">
     <nav class="footer__nav" aria-label="Footer navigation">
-        <Link href="/imprint" variant="ghost">Imprint</Link>
-        <Link href="/privacy_policy" variant="ghost">Privacy Policy</Link>
+        <Link href={getRelativeLocaleUrl(currentLocale, "imprint")} variant="ghost">
+            {t("footer.imprint")}
+        </Link>
+        <Link href={getRelativeLocaleUrl(currentLocale, "privacy_policy")} variant="ghost">
+            {t("footer.privacy")}
+        </Link>
     </nav>
 
     <p class="footer__made-with">
-        Made with
-        <span
+        {t("footer.madeWithBeforeHeart")}
+    <span
             class="footer__icon"
             style={`--icon-url: url("${heartIcon}")`}
-            aria-label="love"
-            role="img"
-        ></span>
-        by Tobias Plank and help of AI.
+            aria-hidden="true"
+    ></span>
+        {t("footer.madeWithAfterHeart", { name: fullName || "..." })}
     </p>
 
-
     <p class="footer__copyright">
-        <span
+    <span
             class="footer__icon"
             style={`--icon-url: url("${copyrightIcon}")`}
-            aria-label="copyright"
-            role="img"
-        ></span>
-        2026 Tobias Plank. All rights reserved.
+            aria-hidden="true"
+    ></span>
+        {t("footer.copyright", { name: fullName })}
     </p>
 </footer>

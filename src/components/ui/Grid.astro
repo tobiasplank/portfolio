@@ -56,10 +56,10 @@ const templateRows = typeof rows === "number" ? `repeat(${rows}, minmax(0, 1fr))
         isolation: isolate;
         display: grid;
 
-        /* Bündig mit den vertikalen Layout-Seitenlinien */
+        /* Aligned with the vertical layout guide lines */
         min-height: var(--grid-min-height);
 
-        /* Spalten & Zeilen */
+        /* Columns and rows */
         grid-template-columns: var(--grid-cols);
         grid-template-rows: var(--grid-rows);
         align-items: var(--grid-align-items);
@@ -68,7 +68,7 @@ const templateRows = typeof rows === "number" ? `repeat(${rows}, minmax(0, 1fr))
         background-color: transparent;
     }
 
-    /* Standard für alle direkten Kind-Elemente */
+    /* Defaults for all direct child elements */
     .custom-grid > :global(*) {
         width: 100%;
         height: 100%;
@@ -78,24 +78,24 @@ const templateRows = typeof rows === "number" ? `repeat(${rows}, minmax(0, 1fr))
         border-bottom: 1px solid var(--color-line);
     }
 
-    /* Rechte Kante der letzten Spalte entfernen (liegt auf der Seitenlinie des Layouts) */
+    /* Remove the right edge of the last column (it aligns with the layout edge) */
     .custom-grid > :global(*:nth-child(2n)) {
         border-right: none;
     }
 
-    /* Deckender Hintergrund */
+    /* Solid background */
     .custom-grid > :global(.bg-solid) {
         background-color: var(--color-bg);
     }
 
-    /* Leicht hervorgehobener Hintergrund */
+    /* Slightly emphasized background */
     .custom-grid > :global(.bg-surface) {
         background-color: var(--color-surface);
     }
 
     /*
-     * Durchgehende 100vw-Linie am OBEREN Rand:
-     * Liegt mit z-index: 2 über den Zellen-Hintergründen und schneidet diese sauber ab.
+     * Full-width 100vw line along the TOP edge:
+     * Sits above the cell backgrounds at z-index: 2 and cleanly clips them.
      */
     .custom-grid--top-line::before {
         position: absolute;
@@ -111,8 +111,8 @@ const templateRows = typeof rows === "number" ? `repeat(${rows}, minmax(0, 1fr))
     }
 
     /*
-     * Durchgehende 100vw-Linie am UNTEREN Rand:
-     * Liegt mit bottom: 0 exakt auf dem Zellrand (verhindert 2px Doppellinie).
+     * Full-width 100vw line along the BOTTOM edge:
+     * Sits exactly on the cell edge with bottom: 0 (prevents a 2px double line).
      */
     .custom-grid--bottom-line::after {
         position: absolute;
@@ -127,7 +127,7 @@ const templateRows = typeof rows === "number" ? `repeat(${rows}, minmax(0, 1fr))
         pointer-events: none;
     }
 
-    /* Mobile Anpassung */
+    /* Mobile adjustments */
     @media (max-width: 40rem) {
         .custom-grid {
             width: calc(100% + (var(--grid-cell) * 4));
